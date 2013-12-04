@@ -4,12 +4,46 @@ using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NLS {
-    internal static class FileDirector {
+
+    internal class FileHashIndex {
+
+        public List<String> Files { get { return files; } }
+        public List<String> Hashes { get { return hashes; } }
+        private List<String> hashes = new List<string>(); 
+        private List<String> files = new List<string>();
+
+        public static FileHashIndex Create( String root = "" ) {
+            FileHashIndex fileHashIndex = new FileHashIndex();
+            fileHashIndex.files = GetFiles( root );
+            fileHashIndex.hashes = GetFileHashes( fileHashIndex.files );
+            return fileHashIndex;
+        }
+
+        public String ToString() {
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < files.Count; i++) {
+                output.AppendFormat("{0,-40}{1,-32}\n", files[i], hashes[i]);
+            }
+            return output.ToString();
+        }
+
+        public String ToJson() {
+            String jsonString;
+            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(this.GetType(), 
+                new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true });
+            
+            using (MemoryStream stream = new MemoryStream()) {
+                jsonSerializer.WriteObject(stream, this);
+                jsonString = Encoding.UTF8.GetString(stream.ToArray());
+            }
+            return jsonString;
+        }
 
         public static List<String> GetFiles ( String root = "" ) {
             List<String> fileList = new List<String>();
@@ -40,7 +74,7 @@ namespace NLS {
             return fileHashList;
         }
 
-        public static Dictionary<String, String> GetFileHashIndex() {
+        public static Dictionary<String, String> GetFileHashDictionary() {
             Dictionary<String, String> fileHashIndex = new Dictionary<String, String>();
             List<String> files = GetFiles();
             List<String> hashes = GetFileHashes( files );

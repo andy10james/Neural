@@ -9,28 +9,37 @@ using System.Runtime.Serialization.Json;
 namespace NLS {
     class Controller {
 
+        private static FileHashIndex Index;
+
         static int Main ( string[] args ) {
 
-            long start = DateTime.UtcNow.Ticks;
-            Dictionary<String, String> fileHashIndex = FileDirector.GetFileHashIndex();
-            long end = DateTime.UtcNow.Ticks;
-            Printer.PrintFileHashIndex( fileHashIndex );
-            TimeSpan timeTaken = new TimeSpan( end - start );
-            Printer.WriteLine( "Time taken to hash: " + timeTaken.TotalSeconds + " seconds" );
+            
+            
 
-            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer( fileHashIndex.GetType(), new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true } );
-            String jsonString = "";
-            using ( MemoryStream stream = new MemoryStream() ) {
-                jsonSerializer.WriteObject( stream, fileHashIndex );
-                jsonString = Encoding.UTF8.GetString( stream.ToArray() );
-            }
+
 
             Properties.Settings.Default.PreviousFileHashIndex = jsonString;
             Properties.Settings.Default.Save();
 
             Console.ReadLine();
             return 0;
+
         }
+
+        private static void ProcessIndex() {
+
+            long start = DateTime.UtcNow.Ticks;
+            Index = FileHashIndex.Create();
+            long end = DateTime.UtcNow.Ticks;
+            TimeSpan timeTaken = new TimeSpan(end - start);
+
+            Printer.Write( Index.ToString() );
+            Printer.Write("Time taken to hash: " + timeTaken.TotalSeconds + " seconds");
+
+        }
+
+        private static void SerializeFileHashIndex
+
 
     }
 }
