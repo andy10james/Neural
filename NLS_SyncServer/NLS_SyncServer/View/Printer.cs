@@ -13,7 +13,7 @@ namespace NLS {
             SetCommandLine();
         }
 
-        public static void PrintFileHashIndex(IDictionary dictionary) {
+        /*public static void PrintFileHashIndex(IDictionary dictionary) {
             
             lock (new Object()) {
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -24,7 +24,7 @@ namespace NLS {
                 SetCommandLine();
             }
             
-        }
+        }*/
 
         private static void SetCommandLine() {
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -32,12 +32,15 @@ namespace NLS {
             Console.Write("NLS.Console >> ");
         }
 
-        public static void WriteLine(String input = "") {
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.SetCursorPosition(0, WritePoint);
-            Console.WriteLine(input);
-            WritePoint = Console.CursorTop;
-            SetCommandLine();
+        public static void Write(String input = "") {
+            lock (new Object()) {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.SetCursorPosition(0, WritePoint);
+                Console.WriteLine(input);
+                WritePoint = Console.CursorTop;
+                SetCommandLine();
+            }
+            
         }
 
     }
