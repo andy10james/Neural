@@ -13,6 +13,7 @@ namespace NLS {
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 1;
             Console.Write("nls.console.");
+            Console.ReadLine();
         }
 
         public static void Write(String input = "", ConsoleColor color = ConsoleColor.DarkGray) {
@@ -23,9 +24,14 @@ namespace NLS {
                 Console.SetCursorPosition(0, WritePoint);
                 Console.WriteLine(input);
                 WritePoint = Console.CursorTop;
-                
+                Console.SetCursorPosition(prevCurLeft, prevCurTop);
             }
             
+        }
+
+        public static void Clear() {
+            Console.Clear();
+            WritePoint = 0;
         }
 
     }

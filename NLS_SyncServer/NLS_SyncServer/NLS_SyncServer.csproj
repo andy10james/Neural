@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ConfigurationManager.cs" />
+    <Compile Include="Configuration\ApplicationMemory.cs" />
     <Compile Include="FileHash\FileHash.cs" />
     <Compile Include="Configuration\JsonSerializer.cs" />
     <Compile Include="View\Printer.cs" />

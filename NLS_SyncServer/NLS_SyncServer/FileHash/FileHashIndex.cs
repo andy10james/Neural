@@ -15,11 +15,13 @@ namespace NLS {
     [Serializable]
     internal class FileHashIndex : IEnumerable<FileHash> {
 
+        public List<FileHash> Index { get { return index; } }
         public List<String> Files { get { return index.Select( i => i.File ).ToList(); } }
         public List<String> Hashes { get { return index.Select( i => i.Hash ).ToList(); } }
-        public List<FileHash> Index { get { return index; } }
-        private DateTime created = DateTime.UtcNow;
+        public DateTime Created { get { return created; } }
+        
         private List<FileHash> index = new List<FileHash>();
+        private DateTime created = DateTime.UtcNow;
 
         IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
@@ -33,7 +35,7 @@ namespace NLS {
             StringBuilder output = new StringBuilder();
             foreach (FileHash fileHash in index) {
                 output.AppendFormat("{0,-40}{1,-32}", fileHash.File, fileHash.Hash);
-                if (fileHash == index.Last()) output.AppendLine();
+                if (fileHash != index.Last()) output.AppendLine();
             }
             return output.ToString();
         }
@@ -76,7 +78,6 @@ namespace NLS {
 
         private static List<FileHash> GetFileHashes ( IEnumerable<String> fileList ) {
             
-            MD5 Encryptor = MD5.Create();
             List<FileHash> fileHashList = new List<FileHash>();
             foreach ( String file in fileList ) {
                 FileHash fileHash = FileHash.Create(file);
