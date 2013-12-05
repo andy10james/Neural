@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,10 +14,10 @@ namespace NLS {
         static int Main ( string[] args ) {
 
             ProcessIndex();
+Close();
+            Printer.Read();
 
-            Console.ReadLine();
-
-            Close();
+            
             return 0;
 
         }
@@ -34,7 +35,18 @@ namespace NLS {
         }
 
         private static void Close() {
-            Properties.Settings.Default.PreviousFileHashIndex = Index.ToJson();
+
+            String jsonString;
+            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(Index.GetType(),
+                new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true });
+            using (MemoryStream stream = new MemoryStream()) {
+                jsonSerializer.WriteObject(stream, Index);
+                jsonString = Encoding.UTF8.GetString(stream.ToArray());
+            }
+
+            Printer.Write(jsonString);
+
+            Properties.Settings.Default.PreviousFileHashIndex;
             Properties.Settings.Default.Save();
         }
 

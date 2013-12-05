@@ -9,11 +9,7 @@ namespace NLS {
 
         public static int WritePoint = 0;
 
-        static Printer() {
-            SetCommandLine();
-        }
-
-        private static void SetCommandLine() {
+        public static void Read() {
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 1;
             Console.Write("nls.console.");
@@ -21,11 +17,13 @@ namespace NLS {
 
         public static void Write(String input = "", ConsoleColor color = ConsoleColor.DarkGray) {
             lock (new Object()) {
+                int prevCurLeft = Console.CursorLeft;
+                int prevCurTop = Console.CursorTop;
                 Console.ForegroundColor = color;
                 Console.SetCursorPosition(0, WritePoint);
                 Console.WriteLine(input);
                 WritePoint = Console.CursorTop;
-                SetCommandLine();
+                
             }
             
         }
