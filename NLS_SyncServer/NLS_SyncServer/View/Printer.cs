@@ -13,28 +13,15 @@ namespace NLS {
             SetCommandLine();
         }
 
-        /*public static void PrintFileHashIndex(IDictionary dictionary) {
-            
-            lock (new Object()) {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.SetCursorPosition(0, WritePoint);
-                foreach (var key in dictionary.Keys)
-                    Console.WriteLine("{0,-40}{1,-32}", key, dictionary[key]);
-                WritePoint = Console.CursorTop;
-                SetCommandLine();
-            }
-            
-        }*/
-
         private static void SetCommandLine() {
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 1;
-            Console.Write("NLS.Console >> ");
+            Console.Write("nls.console.");
         }
 
-        public static void Write(String input = "") {
+        public static void Write(String input = "", ConsoleColor color = ConsoleColor.DarkGray) {
             lock (new Object()) {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.ForegroundColor = color;
                 Console.SetCursorPosition(0, WritePoint);
                 Console.WriteLine(input);
                 WritePoint = Console.CursorTop;

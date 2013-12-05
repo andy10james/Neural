@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization.Json;
 
 namespace NLS {
     class Controller {
@@ -13,15 +12,11 @@ namespace NLS {
 
         static int Main ( string[] args ) {
 
-            
-            
-
-
-
-            Properties.Settings.Default.PreviousFileHashIndex = jsonString;
-            Properties.Settings.Default.Save();
+            ProcessIndex();
 
             Console.ReadLine();
+
+            Close();
             return 0;
 
         }
@@ -33,13 +28,15 @@ namespace NLS {
             long end = DateTime.UtcNow.Ticks;
             TimeSpan timeTaken = new TimeSpan(end - start);
 
-            Printer.Write( Index.ToString() );
+            Printer.Write( Index.ToString(), ConsoleColor.DarkGreen );
             Printer.Write("Time taken to hash: " + timeTaken.TotalSeconds + " seconds");
 
         }
 
-        private static void SerializeFileHashIndex
-
+        private static void Close() {
+            Properties.Settings.Default.PreviousFileHashIndex = Index.ToJson();
+            Properties.Settings.Default.Save();
+        }
 
     }
 }

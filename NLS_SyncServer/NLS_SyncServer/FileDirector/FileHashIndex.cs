@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.ComponentModel.Design.Serialization;
 using System.IO;
 using System.Linq;
@@ -11,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace NLS {
 
-    internal class FileHashIndex {
+    internal class FileHashIndex : IEnumerable {
 
         public List<String> Files { get { return files; } }
         public List<String> Hashes { get { return hashes; } }
-        private List<String> hashes = new List<string>(); 
+        private List<String> hashes = new List<string>();
         private List<String> files = new List<string>();
 
         public static FileHashIndex Create( String root = "" ) {
@@ -25,24 +26,33 @@ namespace NLS {
             return fileHashIndex;
         }
 
-        public String ToString() {
+        public override String ToString() {
             StringBuilder output = new StringBuilder();
             for (int i = 0; i < files.Count; i++) {
-                output.AppendFormat("{0,-40}{1,-32}\n", files[i], hashes[i]);
+                output.AppendFormat("{0,-40}{1,-32}", files[i], hashes[i]);
+                if (i + 1 != files.Count) output.AppendLine();
             }
             return output.ToString();
         }
 
         public String ToJson() {
             String jsonString;
-            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(this.GetType(), 
+            Dictionary<String, String> dictionary = this.ToDictionary();
+            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(dictionary.GetType(), 
                 new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true });
-            
             using (MemoryStream stream = new MemoryStream()) {
-                jsonSerializer.WriteObject(stream, this);
+                jsonSerializer.WriteObject(stream, dictionary);
                 jsonString = Encoding.UTF8.GetString(stream.ToArray());
             }
             return jsonString;
+        }
+
+        public Dictionary<String, String> ToDictionary() {
+            Dictionary<String, String> dictionary = new Dictionary<String,String>();
+            for (int i = 0; i < files.Count; i++) {
+                dictionary.Add(files[i], hashes[i]);
+            }
+            return dictionary;
         }
 
         public static List<String> GetFiles ( String root = "" ) {
@@ -74,9 +84,9 @@ namespace NLS {
             return fileHashList;
         }
 
-        public static Dictionary<String, String> GetFileHashDictionary() {
+        public static Dictionary<String, String> GetFileHashDictionary( String root = "" ) {
             Dictionary<String, String> fileHashIndex = new Dictionary<String, String>();
-            List<String> files = GetFiles();
+            List<String> files = GetFiles( root );
             List<String> hashes = GetFileHashes( files );
             for (int i = 0; i < files.Count; i++) {
                 fileHashIndex.Add( files[i], hashes[i] );
