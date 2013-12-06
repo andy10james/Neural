@@ -2,17 +2,17 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace NLS {
+namespace NL.Common {
 
     [Serializable]
-    internal class FileHash {
+    public class FileHash {
 
         public String File { get { return file;  } }
         public String Hash { get { return hash;  } }
         private String file;
         private String hash;
 
-        public static FileHash Create(String file) {
+        internal static FileHash Create(String file) {
 
             MD5 Encryptor = MD5.Create();
             String hash;

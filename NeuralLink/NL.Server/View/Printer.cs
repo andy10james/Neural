@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace NLS {
+namespace NL.Server {
     public static class Printer {
 
         public static int WritePoint = 0;

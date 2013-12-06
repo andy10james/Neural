@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NLS.Configuration {
+namespace NL.Server.Configuration {
     public static class JsonSerializer {
 
         public static String Serialize(Object obj) {

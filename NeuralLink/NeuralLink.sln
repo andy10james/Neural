@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLS_SyncServer", "NLS_SyncServer\NLS_SyncServer.csproj", "{8FD69B18-9B4F-445F-877E-720E9995D4CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NL.Server", "NL.Server\NL.Server.csproj", "{8FD69B18-9B4F-445F-877E-720E9995D4CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NL.Common", "NL.Common\NL.Common.csproj", "{94A989D3-6584-4C11-90FC-2DC7C64CB2F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +15,10 @@ Global
 		{8FD69B18-9B4F-445F-877E-720E9995D4CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FD69B18-9B4F-445F-877E-720E9995D4CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FD69B18-9B4F-445F-877E-720E9995D4CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94A989D3-6584-4C11-90FC-2DC7C64CB2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94A989D3-6584-4C11-90FC-2DC7C64CB2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94A989D3-6584-4C11-90FC-2DC7C64CB2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94A989D3-6584-4C11-90FC-2DC7C64CB2F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

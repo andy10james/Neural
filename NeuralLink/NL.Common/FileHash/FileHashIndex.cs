@@ -10,10 +10,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NLS {
+namespace NL.Common {
 
     [Serializable]
-    internal class FileHashIndex : IEnumerable<FileHash> {
+    public class FileHashIndex : IEnumerable<FileHash> {
 
         public List<FileHash> Index { get { return index; } }
         public List<String> Files { get { return index.Select( i => i.File ).ToList(); } }
