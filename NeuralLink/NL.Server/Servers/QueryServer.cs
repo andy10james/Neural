@@ -29,7 +29,7 @@ namespace NL.Server.Servers {
             if (!IsAlive) {
                 _listenerThread = new Thread(new ThreadStart(Listen));
                 _listenerThread.Start();
-                Printer.Write("Query Server started...", ConsoleColor.Cyan);
+                NLConsole.WriteLine("Query Server online and listening on port " + _port, ConsoleColor.Cyan);
             }
         }
 
@@ -37,11 +37,14 @@ namespace NL.Server.Servers {
             if (IsAlive) {
                 _listenerThread.Abort();
             }
+            NLConsole.WriteLine("Query Server disconnected from port " + _port, ConsoleColor.Cyan);
         }
 
         private void Listen() {
+            _responseThreads = new List<Thread>();
             _listener = new TcpListener(IPAddress.Any, _port);
             _listener.Start();
+            
             while (true) {
                 TcpClient client = _listener.AcceptTcpClient();
                 new Thread(new ParameterizedThreadStart(HandleClient))
@@ -55,19 +58,16 @@ namespace NL.Server.Servers {
             IPEndPoint endPoint = client.Client.RemoteEndPoint as IPEndPoint;
             IPAddress ipaddress = endPoint.Address;
             NetworkStream clientStream = client.GetStream();
-            Byte[] messageBytes = new Byte[4096];
 
-            while (client.Connected) {
-                long bytesRead = 0;
-                try {
-                    bytesRead = clientStream.Read(messageBytes, 0, 4096);
-                }
-                catch {
-                    //todo Implement exception logging here 
-                }
-                String message = BitConverter.ToString(messageBytes);
-                Printer.Write("Connection from " + ipaddress + " requested " + message);
-                
+            int bytesRead = 0;
+            Byte[] messageBytes = new Byte[64];
+
+            while (true) {
+                try { bytesRead = clientStream.Read(messageBytes, 0, messageBytes.Length); } 
+                catch { NLConsole.WriteLine("[" + ipaddress + "] Connection with client was terminated.", ConsoleColor.DarkRed); break; }
+                if (bytesRead == 0) break;
+                String message = Encoding.ASCII.GetString(messageBytes, 0, bytesRead);
+                NLConsole.WriteLine("[" + ipaddress + "] Transmitted: " + message, ConsoleColor.DarkYellow);
             }
 
             client.Close();

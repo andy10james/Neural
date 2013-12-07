@@ -12,13 +12,15 @@ namespace NL.Server {
 
         static int Main ( string[] args ) {
 
+            NLConsole.Clear();
+            NLConsole.Title("Neural Link");
+            NLConsole.StartCommandLine();
+
+            ProcessIndex();
             _queryServer = new QueryServer(9321);
             _queryServer.Connect();
-
-            Printer.Clear();
-            ProcessIndex();
-            Printer.Read();
-
+            
+            
             Close();
             return 0;
 
@@ -31,8 +33,8 @@ namespace NL.Server {
             DateTime end = DateTime.UtcNow;
             TimeSpan timeTaken = end - start;
 
-            Printer.Write( _currentIndex.ToString(), ConsoleColor.DarkGreen );
-            Printer.Write("Time taken to hash: " + timeTaken.TotalSeconds + " seconds");
+            NLConsole.WriteLine( _currentIndex.ToString(), ConsoleColor.DarkGreen );
+            NLConsole.WriteLine("Time taken to hash: " + timeTaken.TotalSeconds + " seconds");
 
         }
 
