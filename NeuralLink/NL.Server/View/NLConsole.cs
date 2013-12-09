@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Diagnostics;
 
-namespace NL.Server {
+
+namespace NL.Server.View {
     public static class NLConsole {
 
         private const String prefix = "nl.server.";
@@ -13,6 +14,7 @@ namespace NL.Server {
         private static Int32 writeLine = 0;
         private static String commandBuffer;
         private static Thread commandThread;
+        private static List<ICommandSubscriber> subscribers;
 
         public static Boolean InCommandLine { get {
             if (commandThread != null && commandThread.IsAlive)
@@ -48,6 +50,9 @@ namespace NL.Server {
         public static void Clear() {
             Console.Clear();
             writeLine = 0;
+            if (InCommandLine) {
+                WriteCommandLine();
+            }
         }
 
         public static void ClearLine(Int32 line) {
@@ -87,8 +92,12 @@ namespace NL.Server {
 
         public static void WriteLine(String input = "", ConsoleColor color = ConsoleColor.DarkGray) {
             lock (new Object()) {
-                Int32 prevTop = Console.CursorTop;
-                Int32 prevLeft = Console.CursorLeft;
+                Console.SetCursorPosition(0, writeLine);
+                Int32 lineOverflow = input.Length / Console.BufferWidth
+                    + ((input.Length % Console.BufferWidth > 0) ? 1 : 0);
+                for (int i = 0; i < lineOverflow; i++) {
+                    ClearLine(Console.CursorTop + i);
+                }
                 Console.SetCursorPosition(0, writeLine);
                 Console.ForegroundColor = color;
                 Console.WriteLine(input);

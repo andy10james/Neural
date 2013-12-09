@@ -2,31 +2,20 @@
 using NL.Server.Configuration;
 using NL.Common;
 using NL.Server.Servers;
+using NL.Server.View;
 
 namespace NL.Server {
-    internal class Controller {
+    internal class MainController {
 
         private static FileHashIndex _currentIndex;
-        private static QueryServer _queryServer;
-        private static DeliveryServer _deliveryServer;
+        private static ServerInit _queryServer;
+        private static ServerInit _deliveryServer;
 
         static int Main ( string[] args ) {
 
             NLConsole.Clear();
             NLConsole.Title("Neural Link");
             NLConsole.StartCommandLine();
-
-            ProcessIndex();
-            _queryServer = new QueryServer(9321);
-            _queryServer.Connect();
-            
-            
-            Close();
-            return 0;
-
-        }
-
-        private static void ProcessIndex() {
 
             DateTime start = DateTime.UtcNow;
             _currentIndex = FileHashIndex.Create();
@@ -35,6 +24,12 @@ namespace NL.Server {
 
             NLConsole.WriteLine( _currentIndex.ToString(), ConsoleColor.DarkGreen );
             NLConsole.WriteLine("Time taken to hash: " + timeTaken.TotalSeconds + " seconds");
+
+            _queryServer = new ServerInit(new QueryServer(), 9321);
+            _queryServer.Connect();
+            
+            Close();
+            return 0;
 
         }
 
