@@ -16,6 +16,10 @@ namespace NL.Server.View {
         private static Thread commandThread;
         private static List<ICommandSubscriber> subscribers;
 
+        static NLConsole() {
+            subscribers = new List<ICommandSubscriber>();
+        }
+
         public static Boolean InCommandLine { get {
             if (commandThread != null && commandThread.IsAlive)
                 return true; else return false;
@@ -36,7 +40,9 @@ namespace NL.Server.View {
         private static void StartCommandLineAsync(Object prefixObject) {
             while (true) {
                 WriteCommandLine();
-                Read();
+                String command = Read();
+                String[] commandPattern = command.Split(' ');
+                NotifySubscribers(commandPattern);
             }
         }
 
@@ -106,6 +112,17 @@ namespace NL.Server.View {
             }
         }
 
+        private static void NotifySubscribers(string[] commandPattern) {
+            foreach (ICommandSubscriber subscriber in subscribers) {
+                subscriber.OnConsoleCommand(commandPattern);
+            }
+        }
+
+        public static void Subscribe(ICommandSubscriber subscriber) {
+            if (!subscribers.Contains(subscriber)) {
+                subscribers.Add(subscriber);
+            }
+        }
 
     }
 }

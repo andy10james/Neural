@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NL.Server.View {
-    internal interface ICommandSubscriber {
+    public interface ICommandSubscriber {
         void OnConsoleCommand(String[] command);
     }
 }
