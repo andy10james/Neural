@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace NL.Server.Properties {
+namespace NL.Server.Tester.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace NL.Server.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("NL.Server.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("NL.Server.Tester.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,9 +63,9 @@ namespace NL.Server.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon appico {
+        internal static System.Drawing.Icon app {
             get {
-                object obj = ResourceManager.GetObject("appico", resourceCulture);
+                object obj = ResourceManager.GetObject("app", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

@@ -48,7 +48,8 @@ namespace NL.Server.View {
 
         private static void WriteCommandLine(String prefix = prefix) {
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.CursorTop = Console.WindowTop + Console.WindowHeight - 1;
+            Console.CursorTop = writeLine > Console.BufferHeight ?
+                writeLine : Console.WindowTop + Console.WindowHeight - 1;
             ClearLine(Console.CursorTop);
             Console.Write(prefix);
         }
