@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.ComponentModel.Design.Serialization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NL.Common {
 
     [Serializable]
     public class FileHashIndex : IEnumerable<FileHash> {
 
-        public List<FileHash> Index { get { return index; } }
-        public List<String> Files { get { return index.Select( i => i.File ).ToList(); } }
-        public List<String> Hashes { get { return index.Select( i => i.Hash ).ToList(); } }
+        public FileHash[] Index { get { return index.ToArray(); } }
+        public String[] Files { get { return index.Select( i => i.File ).ToArray(); } }
+        public String[] Hashes { get { return index.Select( i => i.Hash ).ToArray(); } }
         public DateTime Created { get { return created; } }
         
         private List<FileHash> index = new List<FileHash>();

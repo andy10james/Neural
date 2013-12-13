@@ -49,7 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandController.cs" />
     <Compile Include="Configuration\ServerConfiguration.cs" />
     <Compile Include="Configuration\ServerMemory.cs" />
     <Compile Include="Configuration\JsonSerializer.cs" />
@@ -57,7 +56,6 @@
     <Compile Include="Servers\IServer.cs" />
     <Compile Include="Servers\QueryServer.cs" />
     <Compile Include="Servers\ServerInit.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="View\NLConsole.cs" />
     <Compile Include="MainController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,9 +77,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\main.ico" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

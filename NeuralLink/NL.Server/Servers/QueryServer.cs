@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
-
+using NL.Common;
 using NL.Server.View;
 
 namespace NL.Server.Servers {
@@ -27,10 +26,16 @@ namespace NL.Server.Servers {
         private const ConsoleColor _clientDisconnectedColor = ConsoleColor.DarkYellow;
         private const ConsoleColor _clientTransmittedColor = ConsoleColor.Yellow;
 
+        private delegate void ActionDelegate(String[] parameters, TcpClient client = null);
+        private Dictionary<String, ActionDelegate> ActionDictionary;
+
         private List<Thread> _handlers = new List<Thread>();
 
         public QueryServer() {
             NLConsole.Subscribe(this);
+            ActionDictionary = new Dictionary<string, ActionDelegate>() {
+                {"HASH", CheckHashAction}
+            };
         }
 
         public void HandleClient(Object clientObject) {
@@ -39,6 +44,12 @@ namespace NL.Server.Servers {
 
             TcpClient client = (TcpClient)clientObject;
             IPEndPoint endPoint = client.Client.RemoteEndPoint as IPEndPoint;
+
+            if (endPoint == null) { 
+                client.Close();
+                return; 
+            }
+
             IPAddress ipaddress = endPoint.Address;
             NetworkStream clientStream = client.GetStream();
 
@@ -52,7 +63,8 @@ namespace NL.Server.Servers {
                 catch (Exception e) { NLConsole.WriteLine(String.Format(_clientTerminatedMessage, ipaddress, e.GetType().Name), _clientTerminatedColor); break; }
                 if (bytesRead == 0) break;
                 String message = Encoding.ASCII.GetString(messageBytes, 0, bytesRead);
-                NLConsole.WriteLine(String.Format(_clientTransmittedMessage, ipaddress, message), _clientTransmittedColor);
+                CommandPattern command = CommandPattern.Create(message);
+                InvokeAction(command, client);
             }
 
             NLConsole.WriteLine(String.Format(_clientDisconnectedMessage, ipaddress), _clientDisconnectedColor);
@@ -63,10 +75,47 @@ namespace NL.Server.Servers {
 
         }
 
-        public void OnConsoleCommand(String[] e) {
-            NLConsole.WriteLine("You executed the following command: " + e[0], ConsoleColor.White);
+        public Boolean OnConsoleCommand(CommandPattern e) {
+            return InvokeAction(e);
         }
 
+        public Boolean InvokeAction(CommandPattern command, TcpClient client = null) {
+            ActionDelegate action;
+            ActionDictionary.TryGetValue(command.Command, out action);
+            if (action != null) {
+                action.Invoke(command.Parameters, client);
+                return true;
+            } else if (client != null) {
+                DefaultAction(command, client);
+            }
+            return false;
+        }
+
+        private void CheckHashAction(String[] parameters, TcpClient client = null) {
+            if (client != null) {
+                IPEndPoint endPoint = client.Client.RemoteEndPoint as IPEndPoint;
+                IPAddress ipaddress = endPoint.Address;
+                String consoleNotice = String.Format("[{0}] Executed hash check action.", ipaddress);
+                NLConsole.WriteLine(consoleNotice, ConsoleColor.Yellow);
+                Byte[] response = Encoding.ASCII.GetBytes("EXECUTED HASH CHECK ACTION");
+                client.GetStream().Write(response, 0, response.Length);  
+            } else {
+                NLConsole.WriteLine("Executed Hash Check Action", ConsoleColor.White);
+            }
+        }
+
+        private void DefaultAction(CommandPattern command, TcpClient client = null) {
+            if (client != null) {
+                IPEndPoint endPoint = client.Client.RemoteEndPoint as IPEndPoint;
+                IPAddress ipaddress = endPoint.Address;
+                String consoleNotice = String.Format("[{0}] Transmitted an unrecognised command: {1}.", ipaddress, command.Original);
+                NLConsole.WriteLine(consoleNotice, ConsoleColor.Red);
+                Byte[] response = Encoding.ASCII.GetBytes("UNRECOGNISED ACTION");
+                client.GetStream().Write(response, 0, response.Length);
+            } else {
+                NLConsole.WriteLine("Unrecognised action.", ConsoleColor.White);
+            }
+        }
 
     }
 }

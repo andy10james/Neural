@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Diagnostics;
-
+using NL.Common;
 
 namespace NL.Server.View {
     public static class NLConsole {
@@ -41,8 +41,11 @@ namespace NL.Server.View {
             while (true) {
                 WriteCommandLine();
                 String command = Read();
-                String[] commandPattern = command.Split(' ');
-                NotifySubscribers(commandPattern);
+                CommandPattern commandPattern = CommandPattern.Create(command);
+                Boolean responded = NotifySubscribers(commandPattern);
+                if (!responded) {
+                    WriteLine("Unrecognised action.", ConsoleColor.White);
+                }
             }
         }
 
@@ -113,10 +116,13 @@ namespace NL.Server.View {
             }
         }
 
-        private static void NotifySubscribers(string[] commandPattern) {
+        private static Boolean NotifySubscribers(CommandPattern commandPattern) {
+            Boolean responded = false;
             foreach (ICommandSubscriber subscriber in subscribers) {
-                subscriber.OnConsoleCommand(commandPattern);
+                Boolean response = subscriber.OnConsoleCommand(commandPattern);
+                if (response) responded = true;
             }
+            return responded;
         }
 
         public static void Subscribe(ICommandSubscriber subscriber) {
