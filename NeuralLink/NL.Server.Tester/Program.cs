@@ -10,6 +10,7 @@ using System.Net.Sockets;
 
 namespace NL.Server.Tester {
     class Program {
+
         static void Main(string[] args) {
 
             Console.Title = "Neural Link Server Communication Test Console";
@@ -19,7 +20,7 @@ namespace NL.Server.Tester {
             Console.WriteLine();
 
             Console.ResetColor();
-            TcpClient client = new TcpClient("localhost", 9321);
+            TcpClient client = new TcpClient("localhost", 4010);
             NetworkStream stream = client.GetStream();
 
             Thread senderThread = new Thread(Sender);
@@ -27,14 +28,11 @@ namespace NL.Server.Tester {
             senderThread.Start(stream);
             receiverThread.Start(stream);
             
-            
         }
 
         static void Sender(Object streamObject) {
             NetworkStream stream = streamObject as NetworkStream;
             while (true) {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.ResetColor();
                 String message = Console.ReadLine();
                 Byte[] messageBytes = Encoding.ASCII.GetBytes(message);
                 stream.Write(messageBytes, 0, messageBytes.Length);
@@ -45,12 +43,26 @@ namespace NL.Server.Tester {
             NetworkStream stream = streamObject as NetworkStream;
             while (true) {
                 Byte[] receiveBuffer = new Byte[128];
-                Int32 received = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
+                Int32 received = 0;
+                try { 
+                    received = stream.Read(receiveBuffer, 0, receiveBuffer.Length); 
+                } 
+                catch {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("NL.Server abnormally disconnected.");
+                    break;
+                }
+                if (received == 0) {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("NL.Server disconnected.");
+                    break;
+                }
                 String response = Encoding.ASCII.GetString(receiveBuffer, 0, received);
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine(response);
                 Console.ResetColor(); 
             }
+            Environment.Exit(0);
         }
 
 

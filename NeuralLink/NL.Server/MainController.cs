@@ -3,13 +3,13 @@ using NL.Server.Configuration;
 using NL.Common;
 using NL.Server.Servers;
 using NL.Server.View;
+using NL.Server.Controllers;
 
 namespace NL.Server {
     internal class MainController {
 
         private static FileHashIndex _currentIndex;
-        private static ServerInit _queryServer;
-        private static ServerInit _deliveryServer;
+        private static AdminController adminController;
 
         static int Main ( string[] args ) {
 
@@ -25,9 +25,9 @@ namespace NL.Server {
             NLConsole.WriteLine( _currentIndex.ToString(), ConsoleColor.DarkGreen );
             NLConsole.WriteLine("Time taken to hash: " + timeTaken.TotalSeconds + " seconds");
 
-            _queryServer = new ServerInit(new QueryServer(), 9321);
-            _queryServer.Connect();
-            
+            ServersDirector.ConnectAll();
+            adminController = new AdminController();
+
             Close();
             return 0;
 

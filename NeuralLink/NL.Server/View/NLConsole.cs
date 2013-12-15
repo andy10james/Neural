@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Diagnostics;
 using NL.Common;
+using NL.Server.Controllers;
 
 namespace NL.Server.View {
     public static class NLConsole {
@@ -14,10 +15,10 @@ namespace NL.Server.View {
         private static Int32 writeLine = 0;
         private static String commandBuffer;
         private static Thread commandThread;
-        private static List<ICommandSubscriber> subscribers;
+        private static List<IController> subscribers;
 
         static NLConsole() {
-            subscribers = new List<ICommandSubscriber>();
+            subscribers = new List<IController>();
         }
 
         public static Boolean InCommandLine { get {
@@ -27,19 +28,22 @@ namespace NL.Server.View {
 
         public static void StartCommandLine(String prefix = prefix) {
             if (InCommandLine) return;
-            commandThread = new Thread(StartCommandLineAsync);
+            commandThread = new Thread(CommandLineAsync);
             commandThread.Start();
         }
 
         public static void StopCommandLine() {
-            if (InCommandLine) commandThread.Abort();
-            ClearLine(Console.WindowTop + Console.WindowHeight - 1);
+            if (!InCommandLine) return;
+            Int32 line = writeLine >= Console.WindowHeight ?
+               writeLine : Console.WindowHeight - 1;
+            ClearLine(line);
             Console.SetCursorPosition(0, writeLine);
+            commandThread.Abort();
         }
 
-        private static void StartCommandLineAsync(Object prefixObject) {
+        private static void CommandLineAsync(Object prefixObject) {
             while (true) {
-                WriteCommandLine();
+                WriteCommandLine(reset: false);
                 String command = Read();
                 CommandPattern commandPattern = CommandPattern.Create(command);
                 Boolean responded = NotifySubscribers(commandPattern);
@@ -49,10 +53,10 @@ namespace NL.Server.View {
             }
         }
 
-        private static void WriteCommandLine(String prefix = prefix) {
+        private static void WriteCommandLine(String prefix = prefix, Boolean reset = true) {
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.CursorTop = writeLine > Console.BufferHeight ?
-                writeLine : Console.WindowTop + Console.WindowHeight - 1;
+            if (reset) Console.CursorTop = writeLine >= Console.WindowHeight ?
+              writeLine : Console.WindowHeight - 1;
             ClearLine(Console.CursorTop);
             Console.Write(prefix);
         }
@@ -88,12 +92,12 @@ namespace NL.Server.View {
                     case ConsoleKey.Backspace:
                         if (commandBuffer.Length > 0) {
                             commandBuffer = commandBuffer.Substring(0, commandBuffer.Length-1);
-                            WriteCommandLine(prefix + commandBuffer);
+                            WriteCommandLine(prefix + commandBuffer, false);
                         }
                         break;
                     default:
                         commandBuffer += key.KeyChar;
-                        WriteCommandLine(prefix + commandBuffer);
+                        WriteCommandLine(prefix + commandBuffer, false);
                         break;
                 }
             } while (key.Key != ConsoleKey.Enter);
@@ -118,18 +122,18 @@ namespace NL.Server.View {
 
         private static Boolean NotifySubscribers(CommandPattern commandPattern) {
             Boolean responded = false;
-            foreach (ICommandSubscriber subscriber in subscribers) {
-                Boolean response = subscriber.OnConsoleCommand(commandPattern);
+            foreach (IController subscriber in subscribers) {
+                Boolean response = subscriber.InvokeAction(commandPattern);
                 if (response) responded = true;
             }
             return responded;
         }
 
-        public static void Subscribe(ICommandSubscriber subscriber) {
+        public static void Subscribe(IController subscriber) {
             if (!subscribers.Contains(subscriber)) {
                 subscribers.Add(subscriber);
             }
-        }
+        }   
 
     }
 }
