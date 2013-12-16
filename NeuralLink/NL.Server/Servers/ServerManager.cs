@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NL.Server.Controllers;
+using NL.Server.Configuration;
 using NL.Common;
-
 using NL.Server.View;
 
 namespace NL.Server.Servers {
@@ -35,6 +35,7 @@ namespace NL.Server.Servers {
         public void Connect() {            
             if (!IsAlive) {
                 listenerThread = new Thread(new ThreadStart(Listen));
+                listenerThread.Name = Thread.CurrentThread.Name + "." + server.GetType().Name;
                 listenerThread.Start();
                 String message = String.Format(server.ConnectedMessage, port);
                 NLConsole.WriteLine(message, ConsoleColor.Cyan);
@@ -42,7 +43,12 @@ namespace NL.Server.Servers {
         }
 
         public void Disconnect() {
+            NLConsole.WriteLine("Current Thread: " + Thread.CurrentThread.Name);
+            NLConsole.WriteLine("Target Thread: " + listenerThread.Name);
             if (IsAlive) {
+                foreach (ServerHandle handle in handles) {
+                    handle.Thread.Abort();
+                }
                 listenerThread.Abort();
             }
             String message = String.Format( server.DisconnectedMessage, port);
@@ -54,9 +60,8 @@ namespace NL.Server.Servers {
             listener.Start();
             while (true) {
                 TcpClient client = listener.AcceptTcpClient();
-
-                
                 Thread handler = new Thread(new ParameterizedThreadStart(HandleClient));
+                handler.Name = Thread.CurrentThread.Name + "." + (client.Client.RemoteEndPoint as IPEndPoint);
                 handler.Start(client);
             }
         }
@@ -76,7 +81,13 @@ namespace NL.Server.Servers {
                 Client = client
             };
             handles.Add(handle);
-            
+
+            if (ServerConfiguration.BeepOnConnection) {
+                Console.Beep(1000, 80);
+                Console.Beep(1500, 80);
+                Console.Beep(2000, 200);
+            }
+           
             IPAddress ipaddress = endPoint.Address;
             NetworkStream clientStream = client.GetStream();
 
@@ -88,7 +99,7 @@ namespace NL.Server.Servers {
 
             while (true) {
                 try { bytesRead = clientStream.Read(messageBytes, 0, messageBytes.Length); } 
-                catch (Exception e) { NLConsole.WriteLine(String.Format(server.ClientTerminatedMessage, ipaddress), server.ClientTerminatedColor); break; }
+                catch { NLConsole.WriteLine(String.Format(server.ClientTerminatedMessage, ipaddress), server.ClientTerminatedColor); break; }
                 if (bytesRead == 0) { complete = true; break; }
                 String message = Encoding.ASCII.GetString(messageBytes, 0, bytesRead);
                 CommandPattern command = CommandPattern.Create(message);
@@ -103,12 +114,21 @@ namespace NL.Server.Servers {
 
             handles.Remove(handle);
 
+            if (ServerConfiguration.BeepOnDisconnection) {
+                Console.Beep(2000, 80);
+                Console.Beep(1500, 80);
+                Console.Beep(1000, 200);
+            }
+
         }
 
-        public void DisconnectIP(IPAddress ipaddress) {
+        public Int32 DisconnectIP(IPAddress ipaddress) {
+            Int32 disconnected = 0;
             foreach (ServerHandle handle in handles.Where(h => (h.Client.Client.RemoteEndPoint as IPEndPoint).Address.Equals(ipaddress))) {
                 handle.Client.Close();
+                disconnected++;
             }
+            return disconnected;
         }
 
 

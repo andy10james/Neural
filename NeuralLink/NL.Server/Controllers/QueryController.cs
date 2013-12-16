@@ -8,7 +8,7 @@ using NL.Common;
 using NL.Server.View;
 using NL.Server.Controllers;
 
-namespace NL.Server.Servers {
+namespace NL.Server.Controllers {
     internal class QueryController : IRemoteController {
 
         public QueryController() : base() {

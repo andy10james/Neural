@@ -53,6 +53,11 @@
     <Compile Include="Configuration\ServerConfiguration.cs" />
     <Compile Include="Configuration\ServerMemory.cs" />
     <Compile Include="Configuration\JsonSerializer.cs" />
+    <Compile Include="Configuration\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Servers\ServerHandle.cs" />
     <Compile Include="Controllers\DeliveryController.cs" />
@@ -60,6 +65,7 @@
     <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Servers\ServerManager.cs" />
     <Compile Include="Servers\ServersDirector.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="View\NLConsole.cs" />
     <Compile Include="MainController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +89,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Configuration\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

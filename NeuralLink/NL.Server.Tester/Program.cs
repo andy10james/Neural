@@ -11,6 +11,9 @@ using System.Net.Sockets;
 namespace NL.Server.Tester {
     class Program {
 
+        static Thread senderThread;
+        static Thread receiverThread;
+
         static void Main(string[] args) {
 
             Console.Title = "Neural Link Server Communication Test Console";
@@ -23,11 +26,15 @@ namespace NL.Server.Tester {
             TcpClient client = new TcpClient("localhost", 4010);
             NetworkStream stream = client.GetStream();
 
-            Thread senderThread = new Thread(Sender);
-            Thread receiverThread = new Thread(Receiver);
+            senderThread = new Thread(Sender);
+            receiverThread = new Thread(Receiver);
             senderThread.Start(stream);
             receiverThread.Start(stream);
-            
+
+            senderThread.Join();
+
+            Console.Write("Servers ended");
+
         }
 
         static void Sender(Object streamObject) {
@@ -62,7 +69,9 @@ namespace NL.Server.Tester {
                 Console.WriteLine(response);
                 Console.ResetColor(); 
             }
-            Environment.Exit(0);
+
+            senderThread.Interrupt();
+            receiverThread.Interrupt();
         }
 
 

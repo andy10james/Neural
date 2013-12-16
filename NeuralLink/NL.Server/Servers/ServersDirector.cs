@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using NL.Server.Controllers;
+using NL.Server.Configuration;
 
 
 namespace NL.Server.Servers {
@@ -52,10 +53,32 @@ namespace NL.Server.Servers {
             }
         }
 
-        public static void DisconnectIP(IPAddress ipaddress) {
+        public static Int32 DisconnectIP(IPAddress ipaddress) {
+            Int32 disconnected = 0;
             foreach (ServerManager serverMan in connectedServers.Values) {
-                serverMan.DisconnectIP(ipaddress);
+                disconnected += serverMan.DisconnectIP(ipaddress);
             }
+            return disconnected;
+        }
+
+        public static Boolean Exists(Int16 port) {
+            return servers.ContainsKey(port);
+        }
+
+        public static Boolean IsConnected(Int16 port) {
+            return connectedServers.ContainsKey(port);
+        }
+
+        public new static String ToString() {
+            StringBuilder output = new StringBuilder();
+            output.AppendFormat("{0,-10}{1,-20}\n", Strings.Port, Strings.Server);
+            foreach (Int16 port in servers.Keys) {
+                
+                output.AppendFormat("{0,-10}{1,-20}{2,-30}", port, servers[port].GetType().Name, 
+                IsConnected(port) ? Strings.Connected : Strings.Disconnected );
+                if (port != servers.Keys.Last()) output.AppendLine();
+            }
+            return output.ToString();
         }
 
     }
