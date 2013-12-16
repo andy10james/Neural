@@ -10,34 +10,34 @@ namespace NL.Common {
     [Serializable]
     public class FileHashIndex : IEnumerable<FileHash> {
 
-        public FileHash[] Index { get { return index.ToArray(); } }
-        public String[] Files { get { return index.Select( i => i.File ).ToArray(); } }
-        public String[] Hashes { get { return index.Select( i => i.Hash ).ToArray(); } }
-        public DateTime Created { get { return created; } }
+        public FileHash[] Index { get { return _index.ToArray(); } }
+        public String[] Files { get { return _index.Select( i => i.File ).ToArray(); } }
+        public String[] Hashes { get { return _index.Select( i => i.Hash ).ToArray(); } }
+        public DateTime Created { get { return _created; } }
         
-        private List<FileHash> index = new List<FileHash>();
-        private DateTime created = DateTime.UtcNow;
+        private List<FileHash> _index = new List<FileHash>();
+        private DateTime _created = DateTime.UtcNow;
 
         IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
         }
 
         public IEnumerator<FileHash> GetEnumerator() {
-            return index.GetEnumerator();
+            return _index.GetEnumerator();
         }
 
         public override String ToString() {
             StringBuilder output = new StringBuilder();
-            foreach (FileHash fileHash in index) {
+            foreach (FileHash fileHash in _index) {
                 output.AppendFormat("{0,-40}{1,-32}", fileHash.File, fileHash.Hash);
-                if (fileHash != index.Last()) output.AppendLine();
+                if (fileHash != _index.Last()) output.AppendLine();
             }
             return output.ToString();
         }
 
         public Dictionary<String, String> ToDictionary() {
             Dictionary<String, String> dictionary = new Dictionary<String,String>();
-            foreach (FileHash fileHash in index) {
+            foreach (FileHash fileHash in _index) {
                 dictionary.Add(fileHash.File, fileHash.Hash);
             }
             return dictionary;
@@ -45,14 +45,14 @@ namespace NL.Common {
 
         public static FileHashIndex Create(String root = "") {
             FileHashIndex fileHashIndex = new FileHashIndex();
-            fileHashIndex.created = DateTime.UtcNow;
-            fileHashIndex.index = GetFileHashes(GetFiles(root));
+            fileHashIndex._created = DateTime.UtcNow;
+            fileHashIndex._index = GetFileHashes(GetFiles(root));
             return fileHashIndex;
         }
 
         public static FileHashIndex Create(IEnumerable<String> files) {
             FileHashIndex fileHashIndex = new FileHashIndex();
-            fileHashIndex.index = GetFileHashes(files);
+            fileHashIndex._index = GetFileHashes(files);
             return fileHashIndex;
         }
 

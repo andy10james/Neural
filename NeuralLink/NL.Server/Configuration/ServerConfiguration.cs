@@ -11,8 +11,8 @@ namespace NL.Server.Configuration {
         public static Uri Repository = new Uri("G:\\Development\\Live\\CGN_NeuralLink\\TestRepository");
         public static Int16 QueryPort = 4010;
         public static Int16 DeliveryPort = 4020;
-        public static Boolean BeepOnConnection = true;
-        public static Boolean BeepOnDisconnection = true;
+        public static Boolean BeepOnConnection = false;
+        public static Boolean BeepOnDisconnection = false;
 
     }
 }

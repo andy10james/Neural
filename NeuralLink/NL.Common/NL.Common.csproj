@@ -46,8 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandPattern.cs" />
-    <Compile Include="FileHash\FileHash.cs" />
-    <Compile Include="FileHash\FileHashIndex.cs" />
+    <Compile Include="FileHash.cs" />
+    <Compile Include="FileHashIndex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

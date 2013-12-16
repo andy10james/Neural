@@ -12,11 +12,11 @@ namespace NL.Server.Controllers {
     class AdminController : IController {
 
         public AdminController() : base() {
-            ActionDictionary.Add("DISCONNECTIP", DisconnectIP);
-            ActionDictionary.Add("DISCONNECTSERVER", DisconnectServer);
+            ActionDictionary.Add("DCIP", DisconnectIP);
+            ActionDictionary.Add("DCSERVER", DisconnectServer);
             ActionDictionary.Add("LISTSERVERS", ListServers);
-            ActionDictionary.Add("DISABLECOMMANDLINE", DisableCommand);
-            ActionDictionary.Add("CLEARCONSOLE", ClearConsole);
+            ActionDictionary.Add("DISABLECL", DisableCommand);
+            ActionDictionary.Add("CLS", ClearConsole);
         }
 
         private void DisconnectIP(String[] parameters) {

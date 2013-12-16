@@ -14,53 +14,59 @@ using NL.Server.View;
 namespace NL.Server.Servers {
     internal class ServerManager {
 
-        public Int16 Port { get { return port; } }
-        public IRemoteController Server { get { return server; } }
-        public List<ServerHandle> Handles { get { return handles; } }
+        public Int16 Port { get { return _port; } }
+        public IRemoteController Server { get { return _server; } }
+        public List<ServerHandle> Handles { get { return _handles; } }
         public Boolean IsAlive {
-            get { return (listenerThread != null && listenerThread.IsAlive); }
+            get { return (_listenerThread != null && _listenerThread.IsAlive); }
         }
 
-        private readonly Int16 port;
-        private readonly IRemoteController server;
-        private TcpListener listener;
-        private Thread listenerThread;
-        private List<ServerHandle> handles = new List<ServerHandle>();
+        private readonly Int16 _port;
+        private readonly IRemoteController _server;
+        private readonly List<ServerHandle> _handles = new List<ServerHandle>();
+        private TcpListener _listener;
+        private Thread _listenerThread;
 
         public ServerManager(IRemoteController server, Int16 port) {
-            this.server = server;
-            this.port = port;
+            this._server = server;
+            this._port = port;
         }
 
         public void Connect() {            
             if (!IsAlive) {
-                listenerThread = new Thread(new ThreadStart(Listen));
-                listenerThread.Name = Thread.CurrentThread.Name + "." + server.GetType().Name;
-                listenerThread.Start();
-                String message = String.Format(server.ConnectedMessage, port);
+                _listenerThread = new Thread(new ThreadStart(Listen));
+                _listenerThread.Name = Thread.CurrentThread.Name + "." + _server.GetType().Name;
+                _listenerThread.Start();
+                String message = String.Format(_server.ConnectedMessage, _port);
                 NLConsole.WriteLine(message, ConsoleColor.Cyan);
             }
         }
 
         public void Disconnect() {
-            NLConsole.WriteLine("Current Thread: " + Thread.CurrentThread.Name);
-            NLConsole.WriteLine("Target Thread: " + listenerThread.Name);
             if (IsAlive) {
-                foreach (ServerHandle handle in handles) {
-                    handle.Thread.Abort();
+                foreach (ServerHandle handle in _handles) {
+                    handle.Client.Close();
                 }
-                listenerThread.Abort();
+                _listener.Stop();
             }
-            String message = String.Format( server.DisconnectedMessage, port);
+            String message = String.Format( _server.DisconnectedMessage, _port);
             NLConsole.WriteLine(message, ConsoleColor.Cyan);
         }
 
         private void Listen() {
-            listener = new TcpListener(IPAddress.Any, port);
-            listener.Start();
+            _listener = new TcpListener(IPAddress.Any, _port);
+            _listener.Start();
             while (true) {
-                TcpClient client = listener.AcceptTcpClient();
-                Thread handler = new Thread(new ParameterizedThreadStart(HandleClient));
+                TcpClient client;
+                try { client = _listener.AcceptTcpClient(); }
+                catch (Exception e) {
+                    if (!(e is SocketException) || (e as SocketException).ErrorCode != 10004) {
+                        String message = String.Format(Strings.ServerAbnormallyTerminated, _port, e.Message + "(" + e.Source + ")");
+                        NLConsole.WriteLine(message, ConsoleColor.Red);
+                    }
+                    break;
+                }
+                Thread handler = new Thread(HandleClient);
                 handler.Name = Thread.CurrentThread.Name + "." + (client.Client.RemoteEndPoint as IPEndPoint);
                 handler.Start(client);
             }
@@ -80,7 +86,7 @@ namespace NL.Server.Servers {
                 Thread = Thread.CurrentThread,
                 Client = client
             };
-            handles.Add(handle);
+            _handles.Add(handle);
 
             if (ServerConfiguration.BeepOnConnection) {
                 Console.Beep(1000, 80);
@@ -91,7 +97,7 @@ namespace NL.Server.Servers {
             IPAddress ipaddress = endPoint.Address;
             NetworkStream clientStream = client.GetStream();
 
-            NLConsole.WriteLine(String.Format(server.ClientConnectedMessage, ipaddress), server.ClientConnectedColor);
+            NLConsole.WriteLine(String.Format(_server.ClientConnectedMessage, ipaddress), _server.ClientConnectedColor);
 
             int bytesRead = 0;
             Byte[] messageBytes = new Byte[64];
@@ -99,20 +105,20 @@ namespace NL.Server.Servers {
 
             while (true) {
                 try { bytesRead = clientStream.Read(messageBytes, 0, messageBytes.Length); } 
-                catch { NLConsole.WriteLine(String.Format(server.ClientTerminatedMessage, ipaddress), server.ClientTerminatedColor); break; }
+                catch { NLConsole.WriteLine(String.Format(_server.ClientTerminatedMessage, ipaddress), _server.ClientTerminatedColor); break; }
                 if (bytesRead == 0) { complete = true; break; }
                 String message = Encoding.ASCII.GetString(messageBytes, 0, bytesRead);
                 CommandPattern command = CommandPattern.Create(message);
-                server.InvokeAction(command, client);
+                _server.InvokeAction(command, client);
             }
 
             if (complete) {
-                NLConsole.WriteLine(String.Format(server.ClientDisconnectedMessage, ipaddress), server.ClientDisconnectedColor);
+                NLConsole.WriteLine(String.Format(_server.ClientDisconnectedMessage, ipaddress), _server.ClientDisconnectedColor);
             }
 
             client.Close();
 
-            handles.Remove(handle);
+            _handles.Remove(handle);
 
             if (ServerConfiguration.BeepOnDisconnection) {
                 Console.Beep(2000, 80);
@@ -124,7 +130,7 @@ namespace NL.Server.Servers {
 
         public Int32 DisconnectIP(IPAddress ipaddress) {
             Int32 disconnected = 0;
-            foreach (ServerHandle handle in handles.Where(h => (h.Client.Client.RemoteEndPoint as IPEndPoint).Address.Equals(ipaddress))) {
+            foreach (ServerHandle handle in _handles.Where(h => (h.Client.Client.RemoteEndPoint as IPEndPoint).Address.Equals(ipaddress))) {
                 handle.Client.Close();
                 disconnected++;
             }

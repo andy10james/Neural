@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Connected" xml:space="preserve">
-    <value>Connected</value>
+    <value>Online</value>
   </data>
   <data name="Disconnected" xml:space="preserve">
-    <value>Disconnected</value>
+    <value>Offline</value>
   </data>
   <data name="InvIPAddress" xml:space="preserve">
     <value>Invalid IP address given.</value>
@@ -133,10 +133,10 @@
     <value>Invalid port number given.</value>
   </data>
   <data name="IPDisconnected" xml:space="preserve">
-    <value>{0} connection(s) from the address were terminated.</value>
+    <value>{0} connection(s) terminated.</value>
   </data>
   <data name="NLConsolePrompt" xml:space="preserve">
-    <value>nlconsole &gt; </value>
+    <value>nlconsole.</value>
   </data>
   <data name="NoServerOnPort" xml:space="preserve">
     <value>No server exists on given port. </value>
@@ -149,5 +149,8 @@
   </data>
   <data name="ServerNotConnected" xml:space="preserve">
     <value>Server is not connected.</value>
+  </data>
+  <data name="ServerAbnormallyTerminated" xml:space="preserve">
+    <value>Server was abnormally terminated on port {0}: {1}.</value>
   </data>
 </root>

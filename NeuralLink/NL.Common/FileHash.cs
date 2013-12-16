@@ -7,10 +7,10 @@ namespace NL.Common {
     [Serializable]
     public class FileHash {
 
-        public String File { get { return file;  } }
-        public String Hash { get { return hash;  } }
-        private String file;
-        private String hash;
+        public String File { get { return _file;  } }
+        public String Hash { get { return _hash;  } }
+        private String _file;
+        private String _hash;
 
         internal static FileHash Create(String file) {
 
@@ -23,8 +23,8 @@ namespace NL.Common {
             }
 
             FileHash fileHash = new FileHash {
-                file = file,
-                hash = hash
+                _file = file,
+                _hash = hash
             };
 
             return fileHash;
