@@ -153,4 +153,16 @@
   <data name="ServerAbnormallyTerminated" xml:space="preserve">
     <value>Server was abnormally terminated on port {0}: {1}.</value>
   </data>
+  <data name="ControllerDoesNotExist" xml:space="preserve">
+    <value>Controller does not exist.</value>
+  </data>
+  <data name="ServerAdded" xml:space="preserve">
+    <value>{0} has been added to port {1}.</value>
+  </data>
+  <data name="ServerAlreadyConnected" xml:space="preserve">
+    <value>Server is already connected.</value>
+  </data>
+  <data name="ServerExistsOnPort" xml:space="preserve">
+    <value>A server already exists on port {0}.</value>
+  </data>
 </root>

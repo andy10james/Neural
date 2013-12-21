@@ -16,11 +16,13 @@ namespace NL.Server.View {
         private static Int32 _writeLine = 0;
         private static String _commandBuffer;
         private static Thread _commandThread;
+        private static List<String> _commandHistory;
         private readonly static List<IController> Subscribers;
         private readonly static Object LockObject = new Object();
 
         static NLConsole() {
             Subscribers = new List<IController>();
+            _commandHistory = new List<String>();
         }
 
         public static Boolean InCommandLine { get {
@@ -94,6 +96,7 @@ namespace NL.Server.View {
         public static String Read() {
             _commandBuffer = "";
             ConsoleKeyInfo key;
+            Int32 commandLookup = _commandHistory.Count;
             do {
                 key = Console.ReadKey(true);
                 switch (key.Key) {
@@ -105,12 +108,31 @@ namespace NL.Server.View {
                             WriteCommandLine(Prompt + _commandBuffer, false);
                         }
                         break;
+                    case ConsoleKey.UpArrow:
+                        if (commandLookup <= 0) {
+                            break;
+                        }
+                        commandLookup--;
+                        _commandBuffer = _commandHistory[commandLookup];
+                        WriteCommandLine(Prompt + _commandBuffer, false);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        commandLookup++;
+                        if (commandLookup >= _commandHistory.Count) {
+                            commandLookup = _commandHistory.Count;
+                            _commandBuffer = String.Empty;
+                        } else {
+                            _commandBuffer = _commandHistory[commandLookup];
+                        }
+                        WriteCommandLine(Prompt + _commandBuffer, false);
+                        break;
                     default:
                         _commandBuffer += key.KeyChar;
                         WriteCommandLine(Prompt + _commandBuffer, false);
                         break;
                 }
             } while (key.Key != ConsoleKey.Enter);
+            _commandHistory.Add(_commandBuffer);
             return _commandBuffer;
         }
 
@@ -132,7 +154,9 @@ namespace NL.Server.View {
 
         private static Boolean NotifySubscribers(CommandPattern commandPattern) {
             Boolean responded = false;
-            foreach (IController subscriber in Subscribers) {
+            IController[] subscribers = new IController[Subscribers.Count];
+            Subscribers.CopyTo(subscribers);
+            foreach (IController subscriber in subscribers) {
                 Boolean response = subscriber.InvokeAction(commandPattern);
                 if (response) responded = true;
             }

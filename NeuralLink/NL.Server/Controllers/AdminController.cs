@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Reflection;
-using System.Windows.Forms.VisualStyles;
+using System.Collections.Generic;
 using NL.Server.Servers;
 using NL.Server.View;
 using NL.Server.Configuration;
@@ -14,6 +14,7 @@ namespace NL.Server.Controllers {
             ActionDictionary.Add("DCIP", DisconnectIP);
             ActionDictionary.Add("DCSERVER", DisconnectServer);
             ActionDictionary.Add("RCSERVER", ConnectServer);
+            ActionDictionary.Add("ADDSERVER", AddNewServer);
             ActionDictionary.Add("LISTSERVERS", ListServers);
             ActionDictionary.Add("DISABLECL", DisableCommand);
             ActionDictionary.Add("CLS", ClearConsole);
@@ -87,15 +88,42 @@ namespace NL.Server.Controllers {
                 NLConsole.WriteLine(Strings.InvPort, ConsoleColor.White);
             } else if (!ServersDirector.Exists(port)) {
                 NLConsole.WriteLine(Strings.NoServerOnPort, ConsoleColor.White);
-            } else if (!ServersDirector.IsConnected(port)) {
-                NLConsole.WriteLine(Strings.ServerNotConnected, ConsoleColor.White);
+            } else if (ServersDirector.IsConnected(port)) {
+                NLConsole.WriteLine(Strings.ServerAlreadyConnected, ConsoleColor.White);
             } else {
                 ServersDirector.Connect(port);
             }
         }
 
         private void AddNewServer(String[] parameters) {
-            Assembly.
+            Int16 port;
+            if (parameters.Length != 2) {
+                NLConsole.WriteLine(Strings.InvNoOfArgs);
+                return;
+            } else if (!Int16.TryParse(parameters[0], out port)) {
+                NLConsole.WriteLine(Strings.InvPort);
+                return;
+            } else if (ServersDirector.Exists(port)) {
+                String message = String.Format(Strings.ServerExistsOnPort, port);
+                NLConsole.WriteLine(message, ConsoleColor.White);
+                return;
+            }
+
+            String controllerName = parameters[1];
+            if (!controllerName.StartsWith("NL.")) {
+                controllerName = "NL.Server.Controllers." + controllerName;
+            }
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            IRemoteController controller = (IRemoteController) assembly.CreateInstance(controllerName, true);
+
+            if (controller == null) {
+                NLConsole.WriteLine(Strings.ControllerDoesNotExist, ConsoleColor.White);
+                return;
+            }
+
+            ServersDirector.AddServer(port, controller);
+
         }
 
         private void Exit(String[] parameters) {
@@ -103,4 +131,6 @@ namespace NL.Server.Controllers {
         }
 
     }
+
 }
+

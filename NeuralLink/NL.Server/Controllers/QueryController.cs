@@ -37,6 +37,6 @@ namespace NL.Server.Controllers {
             Byte[] response = Encoding.ASCII.GetBytes("UNRECOGNISED ACTION");
             client.GetStream().Write(response, 0, response.Length);
         }
-
+        
     }
 }

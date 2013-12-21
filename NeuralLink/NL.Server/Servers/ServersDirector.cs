@@ -5,78 +5,87 @@ using System.Text;
 using System.Net;
 using NL.Server.Controllers;
 using NL.Server.Configuration;
+using NL.Server.View;
 
 
 namespace NL.Server.Servers {
     internal static class ServersDirector {
         
-        private static Dictionary<Int16, IRemoteController> servers; 
-        private static Dictionary<Int16, ServerManager> connectedServers;
+        private static Dictionary<Int16, ServerManager> Servers; 
 
         static ServersDirector() {
-            servers = new Dictionary<Int16, IRemoteController>();
-            connectedServers = new Dictionary<Int16, ServerManager>();
-            servers.Add(4010, new QueryController());
+            Servers = new Dictionary<Int16, ServerManager>();
+            Servers.Add(4010, new ServerManager(new QueryController(), 4010));
+        }
+
+        public static ServerManager AddServer(Int16 port, IRemoteController controller) {
+            return AddServer(port, new ServerManager(controller, port));
+        }
+
+        public static ServerManager AddServer(Int16 port, ServerManager server) {
+            Servers.Add(port, server);
+            String message = String.Format(Strings.ServerAdded, server.Server.GetType().Name, port);
+            NLConsole.WriteLine(message, ConsoleColor.White);
+            return server;
         }
 
         public static void ConnectAll() {
-            foreach (Int16 port in servers.Keys) {
-                ServerManager server = new ServerManager(servers[port], port);
-                server.Connect();
-                connectedServers.Add(port, server);
+            foreach (Int16 port in Servers.Keys) {
+                ServerManager server = Servers[port];
+                if (!server.IsAlive) {
+                    server.Connect();
+                }
             }
         }
 
         public static void Connect(Int16 port) {
-            IRemoteController server;
-            servers.TryGetValue(port, out server);
+            ServerManager server;
+            Servers.TryGetValue(port, out server);
             if (server != null) {
-                ServerManager serverInit = new ServerManager(server, port);
-                serverInit.Connect();
-                connectedServers.Add(port, serverInit);
+                server.Connect();
             }
         }
 
         public static void DisconnectAll() {
-            foreach (Int16 port in servers.Keys) {
-                connectedServers[port].Disconnect();
+            foreach (Int16 port in Servers.Keys) {
+                ServerManager server = Servers[port];
+                if (server.IsAlive) {
+                    server.Disconnect();
+                }
             }
-            connectedServers.Clear();
         }
 
         public static void Disconnect(Int16 port) {
             ServerManager server;
-            connectedServers.TryGetValue(port, out server);
+            Servers.TryGetValue(port, out server);
             if (server != null) {
                 server.Disconnect();
-                connectedServers.Remove(port);
             }
         }
 
         public static Int32 DisconnectIP(IPAddress ipaddress) {
             Int32 disconnected = 0;
-            foreach (ServerManager serverMan in connectedServers.Values) {
-                disconnected += serverMan.DisconnectIP(ipaddress);
+            foreach (ServerManager server in Servers.Values.Where(s => s.IsAlive)) {
+                disconnected += server.DisconnectIP(ipaddress);
             }
             return disconnected;
         }
 
         public static Boolean Exists(Int16 port) {
-            return servers.ContainsKey(port);
+            return Servers.ContainsKey(port);
         }
 
         public static Boolean IsConnected(Int16 port) {
-            return connectedServers.ContainsKey(port);
+            return Servers.Where(s => s.Key == port && s.Value.IsAlive).Any();
         }
 
         public new static String ToString() {
             StringBuilder output = new StringBuilder();
             output.AppendFormat("{0,-10}{1,-20}\n", Strings.Port, Strings.Server);
-            foreach (Int16 port in servers.Keys) {
-                
-                output.AppendFormat("{0,-10}{1,-20}{2,-30}", port, servers[port].GetType().Name, 
+            foreach (Int16 port in Servers.Keys) {
+                output.AppendFormat("{0,-10}{1,-20}{2,-30}", port, Servers[port].Server.GetType().Name, 
                 IsConnected(port) ? Strings.Connected : Strings.Disconnected );
-                if (port != servers.Keys.Last()) output.AppendLine();
+                if (port != Servers.Keys.Last()) output.AppendLine();
             }
             return output.ToString();
         }
