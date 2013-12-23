@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Reflection;
-using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using NL.Server.Servers;
 using NL.Server.View;
 using NL.Server.Configuration;
@@ -16,7 +16,7 @@ namespace NL.Server.Controllers {
             ActionDictionary.Add("RCSERVER", ConnectServer);
             ActionDictionary.Add("ADDSERVER", AddNewServer);
             ActionDictionary.Add("LISTSERVERS", ListServers);
-            ActionDictionary.Add("DISABLECL", DisableCommand);
+            ActionDictionary.Add("DCL", DisableCommand);
             ActionDictionary.Add("CLS", ClearConsole);
             ActionDictionary.Add("EXIT", Exit);
         }
@@ -115,7 +115,13 @@ namespace NL.Server.Controllers {
             }
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-            IRemoteController controller = (IRemoteController) assembly.CreateInstance(controllerName, true);
+            IRemoteController controller;
+            try {
+                controller = (IRemoteController)assembly.CreateInstance(controllerName, true);
+            } catch (InvalidCastException e) {
+                NLConsole.WriteLine(Strings.ControllerDoesNotExist, ConsoleColor.White);
+                return;
+            }
 
             if (controller == null) {
                 NLConsole.WriteLine(Strings.ControllerDoesNotExist, ConsoleColor.White);
