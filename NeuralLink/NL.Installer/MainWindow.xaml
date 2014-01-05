@@ -1,0 +1,13 @@
+﻿<Window x:Name="Core_Games_Dekaron_Installer" x:Class="NL.Installer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Core-Games Dekaron Installer" Height="350" Width="525" ResizeMode="CanMinimize">
+    <Grid x:Name="Main_display">
+        <DataGridCell Height="180" Width="500" Margin="0,0,0,140">
+            <Label x:Name="info" Content="So we have a label we'll change the content of as the programme runs." Margin="0,0,0,0"/>
+        </DataGridCell>
+        <DataGridCell Width="500" Margin="10,185,9,100">
+            <ProgressBar x:Name="progress" Height="20" Width="480" Margin="0,0,0,0" FlowDirection="LeftToRight" MaxWidth="480" MaxHeight="20" Cursor="None" ToolTip="Approximate Percentage of Total Task completed so far." Value="50" ScrollViewer.VerticalScrollBarVisibility="Disabled" IsTabStop="False" BorderBrush="Black" Background="Red"/>
+        </DataGridCell>
+    </Grid>
+</Window>
