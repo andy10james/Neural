@@ -21,27 +21,21 @@ namespace NL.Installer
             : base()
         {
             //Start of application
-            String installPath = "C:/Users/Hicks/Desktop/FileDump/";
-            Thread myThread = new Thread(install);
-            myThread.Start(installPath);
+            String installPath = "C:/Users/Hicks/Desktop/FileDump"; // Set up the path to be used for installation
+            Thread myThread = new Thread(install); // Set up a thread for method maintenance
+            myThread.Start(installPath); // Start up the thread with the method programme loaded
         }
 
         public static void install(Object installPath)
         {
-            //DirectoryInfo currentPath = new DirectoryInfo(Environment.CurrentDirectory);
-            //FileInfo[] files = currentPath.GetFiles();
-            //foreach (FileInfo fi in files)
-            //{
-            //    fi.CopyTo((String)installPath);
-            //}
-            FileStream stream = File.Create(installPath + "Cmd.exe");
-            byte[] file = NL.Installer.Properties.Resources.cmd;
-            stream.Write(file, 0, file.Length);
+            Directory.CreateDirectory((String)installPath); // Make the Directory for use in the install
+            FileStream stream = File.Create(installPath + "/Cmd.exe"); // Set up a stream for writing the file to the full path including filename
+            byte[] file = NL.Installer.Properties.Resources.cmd; // Prepare a RAM copy of the file to be copied
+            stream.Write(file, 0, file.Length); // Write the file
 
-            file = NL.Installer.Properties.Resources.dekaron;
-            stream.Write(file, 0, file.Length);
-
-            //foreach(resource)
+            stream = File.Create(installPath + "/Notepad.exe"); // Change the stream for writing the second file.
+            file = NL.Installer.Properties.Resources.notepad; // Change the RAM copy to the new file
+            stream.Write(file, 0, file.Length); // Write the file
         }
     }
 }
