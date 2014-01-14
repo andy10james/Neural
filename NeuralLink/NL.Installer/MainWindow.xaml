@@ -7,7 +7,7 @@
             <Label x:Name="info" Content="So we have a label we'll change the content of as the programme runs." Margin="0,0,0,0"/>
         </DataGridCell>
         <DataGridCell Width="500" Margin="10,185,9,100">
-            <ProgressBar x:Name="progress" Height="20" Width="480" Margin="0,0,0,0" FlowDirection="LeftToRight" MaxWidth="480" MaxHeight="20" Cursor="None" ToolTip="Approximate Percentage of Total Task completed so far." Value="50" ScrollViewer.VerticalScrollBarVisibility="Disabled" IsTabStop="False" BorderBrush="Black" Background="Red"/>
+            <ProgressBar x:Name="progress" Height="20" Width="480" Margin="0,0,0,0" FlowDirection="LeftToRight" MaxWidth="480" MaxHeight="20" Cursor="None" ToolTip="Approximate Percentage of Total Task completed so far." Value="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" IsTabStop="False" BorderBrush="Black" Background="Red"/>
         </DataGridCell>
     </Grid>
 </Window>

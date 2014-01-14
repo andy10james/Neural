@@ -24,5 +24,13 @@ namespace NL.Installer
         {
             InitializeComponent();
         }
+
+        public ProgressBar progressBar
+        {
+            get
+            {
+                return this.progress;
+            }
+        }
     }
 }
