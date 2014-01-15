@@ -31,8 +31,7 @@ namespace NL.Server.Controllers {
                 NLConsole.WriteLine(Strings.InvIPAddress, ConsoleColor.White);
                 return;
             }
-            Int32 disconnected = Servers.ServersDirector.DisconnectIP(ipaddress);
-            ServersDirector.DisconnectAll();
+            Int32 disconnected = ServersDirector.DisconnectIP(ipaddress);
             String response = String.Format(Strings.IPDisconnected, disconnected);
             NLConsole.WriteLine(response, ConsoleColor.White);
         }
