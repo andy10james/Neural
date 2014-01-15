@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Windows.Forms.VisualStyles;
 using NL.Common;
 using NL.Server.Controllers;
 using NL.Server.Configuration;
@@ -11,6 +12,7 @@ namespace NL.Server.View {
         private static readonly String Prompt = Strings.NLConsolePrompt;
 
         private static Int32 _writeLine;
+        private static Int32 _writeLeft;
         private static String _commandBuffer;
         private static Thread _commandThread;
         private static List<String> _commandHistory;
@@ -22,10 +24,13 @@ namespace NL.Server.View {
             _commandHistory = new List<String>();
         }
 
-        public static Boolean InCommandLine { get {
-            if (_commandThread != null && _commandThread.IsAlive)
-                return true; else return false;
-        } }
+        public static Boolean InCommandLine {
+            get {
+                if (_commandThread != null && _commandThread.IsAlive)
+                    return true;
+                else return false;
+            }
+        }
 
         public static void StartCommandLine() {
             if (InCommandLine) return;
@@ -61,7 +66,11 @@ namespace NL.Server.View {
             lock (LockObject) {
                 if (prefix == null) prefix = Prompt;
                 Console.ForegroundColor = ConsoleColor.Gray;
-                ClearLine(_writeLine);
+                Int32 printOn = _writeLine;
+                if (_writeLeft != 0) printOn = _writeLine + 1;
+                Console.CursorTop = printOn;
+                Console.CursorLeft = 0;
+                ClearLine(printOn);
                 Console.Write(prefix);
             }
         }
@@ -70,6 +79,7 @@ namespace NL.Server.View {
             lock (LockObject) {
                 Console.Clear();
                 _writeLine = 0;
+                _writeLeft = 0;
                 if (InCommandLine) {
                     WriteCommandLine();
                 }
@@ -78,11 +88,28 @@ namespace NL.Server.View {
 
         public static void ClearLine(Int32 line) {
             lock (LockObject) {
+                Int32 curLeft = Console.CursorLeft;
+                Int32 curLine = Console.CursorTop;
                 Console.SetCursorPosition(0, line);
                 for (int i = 1; i < Console.BufferWidth; i++) {
                     Console.Write(" ");
                 }
-                Console.SetCursorPosition(0, line);
+                Console.SetCursorPosition(curLeft, curLine);
+            }
+        }
+
+        public static void ClearForward(Int32 lines = 1) {
+            lock (LockObject) {
+                Int32 curLeft = Console.CursorLeft;
+                Int32 curLine = Console.CursorTop;
+                Int32 buffer = Console.BufferWidth - Console.CursorLeft;
+                for (int i = 1; i < buffer; i++) {
+                    Console.Write(" ");
+                }
+                for (int i = 1; i < lines; i++) {
+                    ClearLine(curLine+i);
+                }
+                Console.SetCursorPosition(curLeft, curLine);
             }
         }
 
@@ -134,17 +161,20 @@ namespace NL.Server.View {
         }
 
         public static void WriteLine(String input = "", ConsoleColor color = ConsoleColor.DarkGray) {
+            Write(input + "\n", color);
+        }
+
+        public static void Write(String input, ConsoleColor color = ConsoleColor.DarkGray) {
             lock (LockObject) {
-                Console.SetCursorPosition(0, _writeLine);
-                Int32 lineOverflow = input.Length / Console.BufferWidth
+                Console.SetCursorPosition(_writeLeft, _writeLine);
+                Int32 lineOverflow = (input.Length + _writeLeft) / Console.BufferWidth
                     + ((input.Length % Console.BufferWidth > 0) ? 1 : 0);
-                for (int i = 0; i < lineOverflow; i++) {
-                    ClearLine(Console.CursorTop + i);
-                }
-                Console.SetCursorPosition(0, _writeLine);
+                ClearForward(lineOverflow);
+                Console.SetCursorPosition(_writeLeft, _writeLine);
                 Console.ForegroundColor = color;
-                Console.WriteLine(input);
+                Console.Write(input);
                 _writeLine = Console.CursorTop;
+                _writeLeft = Console.CursorLeft;
                 if (InCommandLine) WriteCommandLine(Prompt + _commandBuffer);
             }
         }
@@ -164,7 +194,7 @@ namespace NL.Server.View {
             if (!Controllers.Contains(controller)) {
                 Controllers.Add(controller);
             }
-        }   
+        }
 
     }
 }
