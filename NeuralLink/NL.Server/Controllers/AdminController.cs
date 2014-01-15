@@ -19,6 +19,17 @@ namespace NL.Server.Controllers {
             ActionDictionary.Add("DCL", DisableCommand);
             ActionDictionary.Add("CLS", ClearConsole);
             ActionDictionary.Add("EXIT", Exit);
+            ActionDictionary.Add("HELP", CommandHelp);
+        }
+      
+        private void CommandHelp(String[] parameters)
+        {
+            String[] help = Strings.CommandHelp.Split(';');
+            for (int i = 0; i <= 17; i++)
+                if (i % 2 == 0)
+                    NLConsole.WriteLine(help[i], ConsoleColor.White);
+                else
+                    NLConsole.WriteLine(help[i]);
         }
 
         private void DisconnectIP(String[] parameters) {

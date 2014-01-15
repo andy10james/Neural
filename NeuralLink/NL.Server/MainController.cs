@@ -26,6 +26,9 @@ namespace NL.Server {
             ServersDirector.AddServer(4010, new QueryController());
             ServersDirector.ConnectAll();
 
+            NLConsole.WriteLine("Type 'help' for a list of available commands.", ConsoleColor.Red);
+            
+
             Close();
             return 0;
 

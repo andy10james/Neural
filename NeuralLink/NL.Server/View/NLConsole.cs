@@ -52,7 +52,7 @@ namespace NL.Server.View {
                 CommandPattern commandPattern = CommandPattern.Create(command);
                 Boolean responded = InvokeControllers(commandPattern);
                 if (!responded) {
-                    WriteLine("Unrecognised action.", ConsoleColor.White);
+                    WriteLine(Strings.UnrecognisedAction, ConsoleColor.White);
                 }
             }
         }
