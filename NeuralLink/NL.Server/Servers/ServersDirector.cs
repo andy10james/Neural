@@ -15,7 +15,6 @@ namespace NL.Server.Servers {
 
         static ServersDirector() {
             Servers = new Dictionary<Int16, ServerManager>();
-            Servers.Add(4010, new ServerManager(new QueryController(), 4010));
         }
 
         public static ServerManager AddServer(Int16 port, IRemoteController controller) {

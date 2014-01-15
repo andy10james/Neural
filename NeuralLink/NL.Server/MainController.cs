@@ -19,9 +19,12 @@ namespace NL.Server {
             NLConsole.StartCommandLine();
 
             FileService.HashRepository();
+            
+            NLConsole.AddController(new AdminController());
+            NLConsole.AddController(new QueryController());
 
+            ServersDirector.AddServer(4010, new QueryController());
             ServersDirector.ConnectAll();
-            new AdminController();
 
             Close();
             return 0;

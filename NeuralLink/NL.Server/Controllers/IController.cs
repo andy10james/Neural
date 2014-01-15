@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NL.Common;
-using NL.Server.View;
 
 namespace NL.Server.Controllers {
     public abstract class IController {
@@ -13,7 +9,6 @@ namespace NL.Server.Controllers {
         protected Dictionary<String, ActionDelegate> ActionDictionary;
 
         public IController() {
-            NLConsole.Subscribe(this);
             ActionDictionary = new Dictionary<String, ActionDelegate>();
         }
 

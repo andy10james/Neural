@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Diagnostics;
 using NL.Common;
 using NL.Server.Controllers;
 using NL.Server.Configuration;
@@ -13,15 +10,15 @@ namespace NL.Server.View {
 
         private static readonly String Prompt = Strings.NLConsolePrompt;
 
-        private static Int32 _writeLine = 0;
+        private static Int32 _writeLine;
         private static String _commandBuffer;
         private static Thread _commandThread;
         private static List<String> _commandHistory;
-        private readonly static List<IController> Subscribers;
+        private readonly static List<IController> Controllers;
         private readonly static Object LockObject = new Object();
 
         static NLConsole() {
-            Subscribers = new List<IController>();
+            Controllers = new List<IController>();
             _commandHistory = new List<String>();
         }
 
@@ -53,7 +50,7 @@ namespace NL.Server.View {
                 WriteCommandLine(reset: false);
                 String command = Read();
                 CommandPattern commandPattern = CommandPattern.Create(command);
-                Boolean responded = NotifySubscribers(commandPattern);
+                Boolean responded = InvokeControllers(commandPattern);
                 if (!responded) {
                     WriteLine("Unrecognised action.", ConsoleColor.White);
                 }
@@ -152,20 +149,20 @@ namespace NL.Server.View {
             }
         }
 
-        private static Boolean NotifySubscribers(CommandPattern commandPattern) {
+        private static Boolean InvokeControllers(CommandPattern commandPattern) {
             Boolean responded = false;
-            IController[] subscribers = new IController[Subscribers.Count];
-            Subscribers.CopyTo(subscribers);
-            foreach (IController subscriber in subscribers) {
+            IController[] controllers = new IController[Controllers.Count];
+            Controllers.CopyTo(controllers);
+            foreach (IController subscriber in controllers) {
                 Boolean response = subscriber.InvokeAction(commandPattern);
                 if (response) responded = true;
             }
             return responded;
         }
 
-        public static void Subscribe(IController subscriber) {
-            if (!Subscribers.Contains(subscriber)) {
-                Subscribers.Add(subscriber);
+        public static void AddController(IController controller) {
+            if (!Controllers.Contains(controller)) {
+                Controllers.Add(controller);
             }
         }   
 
