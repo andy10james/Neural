@@ -18,7 +18,7 @@ namespace NL.Server.Tester {
 
             Console.Title = "Neural Link Server Communication Test Console";
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("NL.Server.Tester [DEV-Kana, DEV-Dilerium]");
+            Console.WriteLine("NL.Server.Tester [DEV-Kana, DEV-Dilerium, DEV-Seckar]");
             Console.WriteLine("Console for NL developers only.");
             Console.WriteLine();
 

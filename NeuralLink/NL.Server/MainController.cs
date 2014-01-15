@@ -23,6 +23,9 @@ namespace NL.Server {
             ServersDirector.ConnectAll();
             new AdminController();
 
+            NLConsole.WriteLine("Type 'help' for a list of available commands.", ConsoleColor.Red);
+            
+
             Close();
             return 0;
 
