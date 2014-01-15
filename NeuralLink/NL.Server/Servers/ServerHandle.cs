@@ -58,17 +58,27 @@ namespace NL.Server.Servers {
             Boolean complete = false;
 
             while (!ended) {
+
                 try { bytesRead = clientStream.Read(messageBytes, 0, messageBytes.Length); }
-                catch { NLConsole.WriteLine(String.Format(_controller.ClientTerminatedMessage, ipaddress), _controller.ClientTerminatedColor); break; }
-                if (bytesRead == 0) { complete = true; break; }
+                catch {
+                    if (!ended) NLConsole.WriteLine(String.Format(_controller.ClientTerminatedMessage, ipaddress), _controller.ClientTerminatedColor);
+                    break; 
+                }
+                if (bytesRead == 0) {
+                    complete = true;
+                    break;
+                }
+
                 String message = Encoding.ASCII.GetString(messageBytes, 0, bytesRead);
                 CommandPattern command = CommandPattern.Create(message);
                 _controller.InvokeAction(command, _client);
+
             }
 
             _client.Close();
+            OnDeath.Invoke(this);
 
-            if (complete) {
+            if (!ended) {
                 NLConsole.WriteLine(String.Format(_controller.ClientDisconnectedMessage, ipaddress), _controller.ClientDisconnectedColor);
             }
 

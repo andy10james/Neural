@@ -78,6 +78,7 @@ namespace NL.Server.Servers {
                 ServerHandle handle = new ServerHandle(_server, client);
                 handle.OnDeath += (ServerHandle e) => this._handles.Remove(e);
                 handle.Start();
+                _handles.Add(handle);
             }
         }
 
