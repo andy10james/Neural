@@ -166,7 +166,10 @@
     <value>A server already exists on port {0}.</value>
   </data>
   <data name="CommandHelp" xml:space="preserve">
-    <value>CLS;Clears the console of all text with exception of the command line.;DISABLECL;Removes and disables the command line from the console.;DCIP &lt;TARGET IP&gt;;Closes all connections with the target IP address from all servers.;DCSERVER &lt;TARGET SERVER PORT&gt;;Closes all connections on and disconnects the target server.;RCSERVER &lt;TARGET SERVER PORT&gt;;Reconnects the server assigned to the target port, accepting connections.;ADDSERVER &lt;PORT&gt; &lt;CONTROLLER NAME&gt;;Adds a new server to the given port using the remote controller named.;LISTSERVERS;Lists all servers, their ports, and their connected/disconnected state.;EXIT;Disconnects and closes NL.Server completely.;HASH;Currently no action assigned.</value>
+    <value>CLS;Clears the console of all text with exception of the command line.;DISABLECL;Removes and disables the command line from the console.
+It is not possible to re-enable the command line after this command has been 
+executed without restarting the console.;DCIP &lt;TARGET IP&gt;;Closes all connections with the target IP address from all servers.;DCSERVER &lt;TARGET SERVER PORT&gt;;Closes all connections from the target server server.
+Blocks it from accepting any further connections.;RCSERVER &lt;TARGET SERVER PORT&gt;;Reconnects the server assigned to the target port, accepting connections.;ADDSERVER &lt;PORT&gt; &lt;CONTROLLER NAME&gt;;Adds a new server to the given port using the remote controller named.;LISTSERVERS;Lists all servers, their ports, and their connected/disconnected state.;EXIT;Disconnects and closes NL.Server completely.;HASH;Currently no action assigned.</value>
   </data>
   <data name="UnrecognisedAction" xml:space="preserve">
     <value>Unrecognised action.</value>

@@ -20,20 +20,18 @@ namespace NL.Server.Controllers {
             ActionDictionary.Add("CLS", ClearConsole);
             ActionDictionary.Add("EXIT", Exit);
             ActionDictionary.Add("HELP", CommandHelp);
-            NLConsole.WriteLine(Strings.HelpPrompt, ConsoleColor.DarkRed);
+            NLConsole.WriteLine(Strings.HelpPrompt, ConsoleColor.Red);
         }
 
         private void CommandHelp(String[] parameters) {
+            NLConsole.WriteLine();
             String[] help = Strings.CommandHelp.Split(';');
-            for (int i = 0; i < help.Length; i++) {
-                if (i % 2 == 0) {
-                    NLConsole.Write(help[i], ConsoleColor.DarkRed);
-                } else {
-                    NLConsole.Write(help[i]);
-                }
-                NLConsole.Write(" ");
-                if (i == help.Length - 1) NLConsole.WriteLine();
-            }
+            for (int i = 0; i < help.Length; i++)
+                if (i % 2 == 0)
+                    NLConsole.WriteLine(help[i], ConsoleColor.DarkRed);
+                else
+                    NLConsole.WriteLine(help[i]);
+            NLConsole.WriteLine();
         }
 
         private void DisconnectIP(String[] parameters) {
