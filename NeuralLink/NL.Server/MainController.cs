@@ -15,7 +15,7 @@ namespace NL.Server {
             Thread.CurrentThread.Name = "NL.Server";
 
             NLConsole.Clear();
-            NLConsole.Title("Neural Link");
+            NLConsole.Title(Strings.NLConsoleTitle);
             NLConsole.StartCommandLine();
 
             FileService.HashRepository();

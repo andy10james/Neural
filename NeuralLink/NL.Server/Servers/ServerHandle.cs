@@ -20,9 +20,6 @@ namespace NL.Server.Servers {
         private readonly TcpClient _client;
         private Boolean ended = false;
 
-        
-
-
         public ServerHandle(IRemoteController controller, TcpClient client) {
             this._controller = controller;
             this._client = client;
@@ -78,7 +75,7 @@ namespace NL.Server.Servers {
             _client.Close();
             OnDeath.Invoke(this);
 
-            if (!ended) {
+            if (complete) {
                 NLConsole.WriteLine(String.Format(_controller.ClientDisconnectedMessage, ipaddress), _controller.ClientDisconnectedColor);
             }
 

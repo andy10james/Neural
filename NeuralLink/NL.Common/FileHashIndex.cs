@@ -44,40 +44,34 @@ namespace NL.Common {
         }
 
         public static FileHashIndex Create(Uri root) {
+            List<Uri> files = GetFiles(root);
+            return Create(root, files);
+        }
+
+        public static FileHashIndex Create(Uri root, IEnumerable<Uri> files) {
+            root = root.AbsolutePath.EndsWith("/") ?
+                root : new Uri(root.AbsolutePath + '/');
             FileHashIndex fileHashIndex = new FileHashIndex();
             fileHashIndex._created = DateTime.UtcNow;
-            fileHashIndex._index = GetFileHashes(GetFiles(root));
+            fileHashIndex._index = GetFileHashes(root, files);
             return fileHashIndex;
         }
 
-        public static FileHashIndex Create(IEnumerable<String> files) {
-            FileHashIndex fileHashIndex = new FileHashIndex();
-            fileHashIndex._index = GetFileHashes(files);
-            return fileHashIndex;
-        }
-
-        private static List<String> GetFiles (Uri root) {
-            List<String> fileList = new List<String>();
+        private static List<Uri> GetFiles (Uri root) {
+            List<Uri> fileList = new List<Uri>();
             String path = Uri.UnescapeDataString(root.AbsolutePath);
             String[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-            foreach (String file in files) {
-                Uri fileUri = new Uri(file);
-                Uri relUri = root.MakeRelativeUri(fileUri);
-                String relPath = Uri.UnescapeDataString(relUri.ToString());
-                fileList.Add(relPath);
-            }
+            foreach (String file in files) fileList.Add(new Uri(file));
             return fileList;
         }
 
-        private static List<FileHash> GetFileHashes ( IEnumerable<String> fileList ) {
-            
+        private static List<FileHash> GetFileHashes ( Uri root, IEnumerable<Uri> fileList ) {
             List<FileHash> fileHashList = new List<FileHash>();
-            foreach ( String file in fileList ) {
-                FileHash fileHash = FileHash.Create(file);
-                fileHashList.Add( fileHash );
+            foreach (Uri file in fileList) {
+                FileHash fileHash = FileHash.Create(root, file);
+                fileHashList.Add(fileHash);
             }
             return fileHashList;
-            
         }
 
 

@@ -177,4 +177,10 @@ Blocks it from accepting any further connections.;RCSERVER &lt;TARGET SERVER POR
   <data name="HelpPrompt" xml:space="preserve">
     <value>Type 'help' for a list of available commands.</value>
   </data>
+  <data name="TimeTakenToHash" xml:space="preserve">
+    <value>Time taken to hash: {0} seconds</value>
+  </data>
+  <data name="NLConsoleTitle" xml:space="preserve">
+    <value>Neural Link</value>
+  </data>
 </root>

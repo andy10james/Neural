@@ -12,11 +12,16 @@ namespace NL.Common {
         private String _file;
         private String _hash;
 
-        internal static FileHash Create(String file) {
+        internal static FileHash Create(Uri root, Uri path) {
 
             MD5 Encryptor = MD5.Create();
             String hash;
-            using (FileStream fileStream = System.IO.File.OpenRead(file)) {
+
+
+
+            String absPath = Uri.UnescapeDataString(path.AbsolutePath);
+            String file = Uri.UnescapeDataString(root.MakeRelativeUri(path).ToString());
+            using (FileStream fileStream = System.IO.File.OpenRead(absPath)) {
                 Byte[] fileHashBytes = Encryptor.ComputeHash(fileStream);
                 String unformattedFileHash = BitConverter.ToString(fileHashBytes);
                 hash = unformattedFileHash.Replace("-", "").ToLower();
