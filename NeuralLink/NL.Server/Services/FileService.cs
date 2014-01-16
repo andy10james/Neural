@@ -15,7 +15,7 @@ namespace NL.Server.Services {
         public static FileHashIndex HashRepository() {
         
             DateTime start = DateTime.UtcNow;
-            currentIndex = FileHashIndex.Create();
+            currentIndex = FileHashIndex.Create(ServerConfiguration.Repository);
             DateTime end = DateTime.UtcNow;
             TimeSpan timeTaken = end - start;
 

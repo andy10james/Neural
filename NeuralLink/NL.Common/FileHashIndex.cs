@@ -43,7 +43,7 @@ namespace NL.Common {
             return dictionary;
         }
 
-        public static FileHashIndex Create(String root = "") {
+        public static FileHashIndex Create(Uri root) {
             FileHashIndex fileHashIndex = new FileHashIndex();
             fileHashIndex._created = DateTime.UtcNow;
             fileHashIndex._index = GetFileHashes(GetFiles(root));
@@ -56,17 +56,15 @@ namespace NL.Common {
             return fileHashIndex;
         }
 
-        private static List<String> GetFiles ( String root = "" ) {
+        private static List<String> GetFiles (Uri root) {
             List<String> fileList = new List<String>();
-            root = Path.Combine( Environment.CurrentDirectory + "\\", root );
-            root = Path.GetFullPath( root );
-            Uri rootUri = new Uri( root );
-            String[] files = Directory.GetFiles( root, "*", SearchOption.AllDirectories );
-            foreach ( String file in files ) {
-                Uri fileUri = new Uri( file );
-                Uri relUri = rootUri.MakeRelativeUri( fileUri );
-                String relPath = Uri.UnescapeDataString( relUri.ToString() );
-                fileList.Add( relPath );
+            String path = Uri.UnescapeDataString(root.AbsolutePath);
+            String[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            foreach (String file in files) {
+                Uri fileUri = new Uri(file);
+                Uri relUri = root.MakeRelativeUri(fileUri);
+                String relPath = Uri.UnescapeDataString(relUri.ToString());
+                fileList.Add(relPath);
             }
             return fileList;
         }
