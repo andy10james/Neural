@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using NL.Common;
 using NL.Server.View;
@@ -20,7 +16,7 @@ namespace NL.Server.Services {
             try {
                 currentIndex = FileHashIndex.Create(ServerConfiguration.Repository);
             } catch (IOException e) {
-                NLConsole.WriteLine(e.Message, ConsoleColor.Red);
+                NLConsole.WriteLine(e.Message.Trim(), ConsoleColor.Red);
                 return;
             }
 
@@ -28,7 +24,7 @@ namespace NL.Server.Services {
             TimeSpan timeTaken = end - start;
 
             NLConsole.WriteLine( currentIndex.ToString(), ConsoleColor.DarkGreen );
-            NLConsole.WriteLine(String.Format(Strings.TimeTakenToHash, timeTaken.TotalSeconds));
+            NLConsole.WriteLine(String.Format(UIStrings.TimeTakenToHash, timeTaken.TotalSeconds));
 
         }
 

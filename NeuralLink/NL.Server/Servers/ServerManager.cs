@@ -70,7 +70,7 @@ namespace NL.Server.Servers {
                 TcpClient client;
                 try { client = _listener.AcceptTcpClient(); } catch (Exception e) {
                     if (!(e is SocketException) || (e as SocketException).ErrorCode != 10004) {
-                        String message = String.Format(Strings.ServerAbnormallyTerminated, _port, e.Message + "(" + e.Source + ")");
+                        String message = String.Format(UIStrings.ServerAbnormallyTerminated, _port, e.Message + "(" + e.Source + ")");
                         NLConsole.WriteLine(message, ConsoleColor.Red);
                     }
                     break;

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<nl.server>
+  <start>
+    <command enabled="true">rcserver 4010 querycontroller</command>
+    <command enabled="true">rcserver 4020 deliverycontroller</command>
+  </start>
+  <beep>
+    <connection>true</connection>
+    <disconnection>true</disconnection>
+  </beep>
+  
+</nl.server>

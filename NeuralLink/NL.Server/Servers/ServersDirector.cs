@@ -23,7 +23,7 @@ namespace NL.Server.Servers {
 
         public static ServerManager AddServer(Int16 port, ServerManager server) {
             Servers.Add(port, server);
-            String message = String.Format(Strings.ServerAdded, server.Server.GetType().Name, port);
+            String message = String.Format(UIStrings.ServerAdded, server.Server.GetType().Name, port);
             NLConsole.WriteLine(message, ConsoleColor.White);
             return server;
         }
@@ -80,10 +80,10 @@ namespace NL.Server.Servers {
 
         public new static String ToString() {
             StringBuilder output = new StringBuilder();
-            output.AppendFormat("{0,-10}{1,-20}\n", Strings.Port, Strings.Server);
+            output.AppendFormat("{0,-10}{1,-20}\n", UIStrings.Port, UIStrings.Server);
             foreach (Int16 port in Servers.Keys) {
                 output.AppendFormat("{0,-10}{1,-20}{2,-30}", port, Servers[port].Server.GetType().Name, 
-                IsConnected(port) ? Strings.Connected : Strings.Disconnected );
+                IsConnected(port) ? UIStrings.Connected : UIStrings.Disconnected );
                 if (port != Servers.Keys.Last()) output.AppendLine();
             }
             return output.ToString();

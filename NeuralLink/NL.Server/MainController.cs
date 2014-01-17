@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using NL.Server.Configuration;
-using NL.Common;
 using NL.Server.Servers;
 using NL.Server.View;
 using NL.Server.Controllers;
@@ -12,10 +10,12 @@ namespace NL.Server {
 
         static int Main ( string[] args ) {
 
+            ServerConfiguration.Load(XmlStrings.SettingsFile);
+
             Thread.CurrentThread.Name = "NL.Server";
 
             NLConsole.Clear();
-            NLConsole.Title(Strings.NLConsoleTitle);
+            NLConsole.Title(UIStrings.NLConsoleTitle);
             NLConsole.StartCommandLine();
 
             FileService.HashRepository();

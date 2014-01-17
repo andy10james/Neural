@@ -19,12 +19,12 @@ namespace NL.Server.Controllers {
             ActionDictionary.Add("CLS", ClearConsole);
             ActionDictionary.Add("EXIT", Exit);
             ActionDictionary.Add("HELP", CommandHelp);
-            NLConsole.WriteLine(Strings.HelpPrompt, ConsoleColor.Red);
+            NLConsole.WriteLine(UIStrings.HelpPrompt, ConsoleColor.Red);
         }
 
         private void CommandHelp(String[] parameters) {
             NLConsole.WriteLine();
-            String[] help = Strings.CommandHelp.Split(';');
+            String[] help = UIStrings.CommandHelp.Split(';');
             for (int i = 0; i < help.Length; i++)
                 if (i % 2 == 0)
                     NLConsole.WriteLine(help[i], ConsoleColor.DarkRed);
@@ -35,16 +35,16 @@ namespace NL.Server.Controllers {
 
         private void DisconnectIP(String[] parameters) {
             if (parameters.Length != 1) {
-                NLConsole.WriteLine(Strings.InvNoOfArgs, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.InvNoOfArgs, ConsoleColor.White);
                 return;
             }
             IPAddress ipaddress;
             if (!IPAddress.TryParse(parameters[0], out ipaddress)) {
-                NLConsole.WriteLine(Strings.InvIPAddress, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.InvIPAddress, ConsoleColor.White);
                 return;
             }
             Int32 disconnected = ServersDirector.DisconnectIP(ipaddress);
-            String response = String.Format(Strings.IPDisconnected, disconnected);
+            String response = String.Format(UIStrings.IPDisconnected, disconnected);
             NLConsole.WriteLine(response, ConsoleColor.White);
         }
 
@@ -63,7 +63,7 @@ namespace NL.Server.Controllers {
         private void DisconnectServer(String[] parameters) {
             Int16 port = 0;
             if (parameters.Length != 1) {
-                NLConsole.WriteLine(Strings.InvNoOfArgs, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.InvNoOfArgs, ConsoleColor.White);
                 return;
             }
 
@@ -73,11 +73,11 @@ namespace NL.Server.Controllers {
             }
 
             if (!Int16.TryParse(parameters[0], out port)) {
-                NLConsole.WriteLine(Strings.InvPort, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.InvPort, ConsoleColor.White);
             } else if (!ServersDirector.Exists(port)) {
-                NLConsole.WriteLine(Strings.NoServerOnPort, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.NoServerOnPort, ConsoleColor.White);
             } else if (!ServersDirector.IsConnected(port)) {
-                NLConsole.WriteLine(Strings.ServerNotConnected, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.ServerNotConnected, ConsoleColor.White);
             } else {
                 ServersDirector.Disconnect(port);
             }
@@ -86,7 +86,7 @@ namespace NL.Server.Controllers {
         private void ConnectServer(String[] parameters) {
             Int16 port = 0;
             if (parameters.Length != 1) {
-                NLConsole.WriteLine(Strings.InvNoOfArgs, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.InvNoOfArgs, ConsoleColor.White);
                 return;
             }
 
@@ -96,11 +96,11 @@ namespace NL.Server.Controllers {
             }
 
             if (!Int16.TryParse(parameters[0], out port)) {
-                NLConsole.WriteLine(Strings.InvPort, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.InvPort, ConsoleColor.White);
             } else if (!ServersDirector.Exists(port)) {
-                NLConsole.WriteLine(Strings.NoServerOnPort, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.NoServerOnPort, ConsoleColor.White);
             } else if (ServersDirector.IsConnected(port)) {
-                NLConsole.WriteLine(Strings.ServerAlreadyConnected, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.ServerAlreadyConnected, ConsoleColor.White);
             } else {
                 ServersDirector.Connect(port);
             }
@@ -109,13 +109,13 @@ namespace NL.Server.Controllers {
         private void AddNewServer(String[] parameters) {
             Int16 port;
             if (parameters.Length != 2) {
-                NLConsole.WriteLine(Strings.InvNoOfArgs);
+                NLConsole.WriteLine(UIStrings.InvNoOfArgs);
                 return;
             } else if (!Int16.TryParse(parameters[0], out port)) {
-                NLConsole.WriteLine(Strings.InvPort);
+                NLConsole.WriteLine(UIStrings.InvPort);
                 return;
             } else if (ServersDirector.Exists(port)) {
-                String message = String.Format(Strings.ServerExistsOnPort, port);
+                String message = String.Format(UIStrings.ServerExistsOnPort, port);
                 NLConsole.WriteLine(message, ConsoleColor.White);
                 return;
             }
@@ -130,12 +130,12 @@ namespace NL.Server.Controllers {
             try {
                 controller = (IRemoteController)assembly.CreateInstance(controllerName, true);
             } catch (InvalidCastException e) {
-                NLConsole.WriteLine(Strings.ControllerDoesNotExist, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.ControllerDoesNotExist, ConsoleColor.White);
                 return;
             }
 
             if (controller == null) {
-                NLConsole.WriteLine(Strings.ControllerDoesNotExist, ConsoleColor.White);
+                NLConsole.WriteLine(UIStrings.ControllerDoesNotExist, ConsoleColor.White);
                 return;
             }
 

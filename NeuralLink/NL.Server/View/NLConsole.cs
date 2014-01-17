@@ -9,7 +9,7 @@ using NL.Server.Configuration;
 namespace NL.Server.View {
     public static class NLConsole {
 
-        private static readonly String Prompt = Strings.NLConsolePrompt;
+        private static readonly String Prompt = UIStrings.NLConsolePrompt;
 
         private static Int32 _writeLine;
         private static Int32 _writeLeft;
@@ -57,7 +57,7 @@ namespace NL.Server.View {
                 CommandPattern commandPattern = CommandPattern.Create(command);
                 Boolean responded = InvokeControllers(commandPattern);
                 if (!responded) {
-                    WriteLine(Strings.UnrecognisedAction, ConsoleColor.White);
+                    WriteLine(UIStrings.UnrecognisedAction, ConsoleColor.White);
                 }
             }
         }

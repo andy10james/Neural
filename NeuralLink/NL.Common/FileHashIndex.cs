@@ -74,7 +74,5 @@ namespace NL.Common {
             return fileHashList;
         }
 
-
-
     }
 }
