@@ -23,14 +23,12 @@ namespace NL.Server.Controllers {
         }
 
         private void CommandHelp(String[] parameters) {
-            NLConsole.WriteLine();
             String[] help = UIStrings.CommandHelp.Split(';');
             for (int i = 0; i < help.Length; i++)
                 if (i % 2 == 0)
                     NLConsole.WriteLine(help[i], ConsoleColor.DarkRed);
                 else
                     NLConsole.WriteLine(help[i]);
-            NLConsole.WriteLine();
         }
 
         private void DisconnectIP(String[] parameters) {
