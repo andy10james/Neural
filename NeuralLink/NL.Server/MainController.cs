@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using NL.Server.Configuration;
 using NL.Server.Servers;
 using NL.Server.View;
@@ -10,8 +11,6 @@ namespace NL.Server {
 
         static int Main ( string[] args ) {
 
-            ServerConfiguration.Load(XmlStrings.SettingsFile);
-
             Thread.CurrentThread.Name = "NL.Server";
 
             NLConsole.Clear();
@@ -19,11 +18,14 @@ namespace NL.Server {
             NLConsole.StartCommandLine();
 
             FileService.HashRepository();
-            
+
             NLConsole.AddController(new AdminController());
             NLConsole.AddController(new QueryController());
 
-            ServersDirector.AddServer(4010, new QueryController());
+            foreach (String command in ServerConfiguration.StartUpCommands) {
+                NLConsole.InvokeConsoleCommand(command);
+            }
+
             ServersDirector.ConnectAll();
 
             Close();

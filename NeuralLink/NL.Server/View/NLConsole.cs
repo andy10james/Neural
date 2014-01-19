@@ -54,11 +54,7 @@ namespace NL.Server.View {
             while (true) {
                 WriteCommandLine(reset: false);
                 String command = Read();
-                CommandPattern commandPattern = CommandPattern.Create(command);
-                Boolean responded = InvokeControllers(commandPattern);
-                if (!responded) {
-                    WriteLine(UIStrings.UnrecognisedAction, ConsoleColor.White);
-                }
+                InvokeConsoleCommand(command);
             }
         }
 
@@ -176,6 +172,14 @@ namespace NL.Server.View {
                 _writeLine = Console.CursorTop;
                 _writeLeft = Console.CursorLeft;
                 if (InCommandLine) WriteCommandLine(Prompt + _commandBuffer);
+            }
+        }
+
+        public static void InvokeConsoleCommand(String command) {
+            CommandPattern commandPattern = CommandPattern.Create(command);
+            Boolean responded = InvokeControllers(commandPattern);
+            if (!responded) {
+                WriteLine(UIStrings.UnrecognisedAction, ConsoleColor.White);
             }
         }
 

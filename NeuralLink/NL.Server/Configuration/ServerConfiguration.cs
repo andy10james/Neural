@@ -28,16 +28,16 @@ namespace NL.Server.Configuration {
         public static void LoadStart(XmlNode serverNode) {
             List<XmlNode> startUpNodes = GetNodes(serverNode, XmlStrings.StartRoute);
             StartUpCommands =
-                startUpNodes.Where(n => n.Attributes[XmlStrings.StartEnabledAttribute].Value.Equals("True"))
-                    .Select(n => n.Value).ToArray();
+                startUpNodes.Where(n => n.Attributes[XmlStrings.StartEnabledAttribute].Value.ToLower().Equals("true"))
+                    .Select(n => n.InnerText).ToArray();
         }
 
         public static List<XmlNode> GetNodes(XmlNode serverNode, String path) {
             String[] nodes = path.Split('\\');
-            XmlNode currentNode = null;
+            XmlNode currentNode = serverNode;
             List<XmlNode> matchedNodes = new List<XmlNode>();
             foreach (String node in nodes) {
-                foreach (XmlNode child in serverNode) {
+                foreach (XmlNode child in currentNode) {
                     if (!nodes.Last().Equals(node) && child.Name.Equals(node)) {
                         currentNode = child;
                         break;
