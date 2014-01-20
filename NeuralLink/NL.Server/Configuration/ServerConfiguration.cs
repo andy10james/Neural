@@ -10,8 +10,8 @@ namespace NL.Server.Configuration {
 
         public static String[] StartUpCommands;
         public static Uri Repository = new Uri(Environment.CurrentDirectory, UriKind.Absolute);
-        public static Boolean BeepOnConnection = false;
-        public static Boolean BeepOnDisconnection = false;
+        public static Boolean BeepOnConnection = true;
+        public static Boolean BeepOnDisconnection = true;
 
         static ServerConfiguration() {
             Load(XmlStrings.SettingsFile);
