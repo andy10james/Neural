@@ -61,11 +61,20 @@ namespace NL.Server.Configuration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to beep.
+        ///   Looks up a localized string similar to beep\connection.
         /// </summary>
-        internal static string BeepRoute {
+        internal static string BeepOnConnectRoute {
             get {
-                return ResourceManager.GetString("BeepRoute", resourceCulture);
+                return ResourceManager.GetString("BeepOnConnectRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to beep\disconnection.
+        /// </summary>
+        internal static string BeepOnDisconnectRoute {
+            get {
+                return ResourceManager.GetString("BeepOnDisconnectRoute", resourceCulture);
             }
         }
         

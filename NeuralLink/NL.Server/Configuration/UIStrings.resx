@@ -183,4 +183,7 @@ disables it from accepting any further connections.;RCSERVER &lt;PORT&gt;;Reconn
   <data name="NLConsoleTitle" xml:space="preserve">
     <value>Neural Link</value>
   </data>
+  <data name="ConfigStartUpLoadComplete" xml:space="preserve">
+    <value>Successfully loaded server startup commands.</value>
+  </data>
 </root>

@@ -4,13 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms.VisualStyles;
 using System.Xml;
+using NL.Server.View;
 
 namespace NL.Server.Configuration {
     internal static class ServerConfiguration {
 
         public static String[] StartUpCommands;
         public static Uri Repository = new Uri(Environment.CurrentDirectory, UriKind.Absolute);
-        public static Boolean BeepOnConnection = true;
+        public static Boolean BeepOnConnection = false;
         public static Boolean BeepOnDisconnection = true;
 
         static ServerConfiguration() {
@@ -23,6 +24,8 @@ namespace NL.Server.Configuration {
             settingsXml.Load(fs);
             XmlNode serverNode = settingsXml.GetElementsByTagName(XmlStrings.ServerRoute)[0];
             LoadStart(serverNode);
+            LoadBeeps(serverNode);
+            
         }
 
         public static void LoadStart(XmlNode serverNode) {
@@ -30,6 +33,18 @@ namespace NL.Server.Configuration {
             StartUpCommands =
                 startUpNodes.Where(n => n.Attributes[XmlStrings.StartEnabledAttribute].Value.ToLower().Equals("true"))
                     .Select(n => n.InnerText).ToArray();
+            NLConsole.WriteLine(UIStrings.ConfigStartUpLoadComplete);
+        }
+
+        public static void LoadBeeps(XmlNode serverNode) {
+            XmlNode beepOnConnectNode = GetNodes(serverNode, XmlStrings.BeepOnConnectRoute).FirstOrDefault();
+            XmlNode beepOnDisconnectNode = GetNodes(serverNode, XmlStrings.BeepOnDisconnectRoute).FirstOrDefault();
+            if (beepOnConnectNode != null) {
+                Boolean.TryParse(beepOnConnectNode.InnerText, out BeepOnConnection);
+            }
+            if (beepOnDisconnectNode != null) {
+                Boolean.TryParse(beepOnDisconnectNode.InnerText, out BeepOnDisconnection);
+            }
         }
 
         public static List<XmlNode> GetNodes(XmlNode serverNode, String path) {
