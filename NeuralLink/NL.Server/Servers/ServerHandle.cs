@@ -48,7 +48,7 @@ namespace NL.Server.Servers {
             IPAddress ipaddress = EndPoint.Address;
             NetworkStream clientStream = _client.GetStream();
 
-            NLConsole.WriteLine(String.Format(_controller.ClientConnectedMessage, ipaddress), _controller.ClientConnectedColor);
+            NLConsole.WriteLine(String.Format(UIStrings.ClientConnected, _controller.GetName(), ipaddress), _controller.ClientConnectedColor);
 
             int bytesRead = 0;
             Byte[] messageBytes = new Byte[64];
@@ -58,7 +58,7 @@ namespace NL.Server.Servers {
 
                 try { bytesRead = clientStream.Read(messageBytes, 0, messageBytes.Length); }
                 catch {
-                    if (!ended) NLConsole.WriteLine(String.Format(_controller.ClientTerminatedMessage, ipaddress), _controller.ClientTerminatedColor);
+                    if (!ended) NLConsole.WriteLine(String.Format(UIStrings.ClientTerminated, _controller.GetName(), ipaddress), _controller.ClientTerminatedColor);
                     break; 
                 }
                 if (bytesRead == 0) {
@@ -76,7 +76,7 @@ namespace NL.Server.Servers {
             OnDeath.Invoke(this);
 
             if (complete) {
-                NLConsole.WriteLine(String.Format(_controller.ClientDisconnectedMessage, ipaddress), _controller.ClientDisconnectedColor);
+                NLConsole.WriteLine(String.Format(UIStrings.ClientDisconnected, _controller.GetName(), ipaddress), _controller.ClientDisconnectedColor);
             }
 
             if (ServerConfiguration.BeepOnDisconnection) {

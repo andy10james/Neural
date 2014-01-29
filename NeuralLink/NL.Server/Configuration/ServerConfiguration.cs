@@ -33,18 +33,21 @@ namespace NL.Server.Configuration {
             StartUpCommands =
                 startUpNodes.Where(n => n.Attributes[XmlStrings.StartEnabledAttribute].Value.ToLower().Equals("true"))
                     .Select(n => n.InnerText).ToArray();
-            NLConsole.WriteLine(UIStrings.ConfigStartUpLoadComplete);
+            NLConsole.WriteLine(UIStrings.ConfigStartUpLoadComplete, ConsoleColor.DarkYellow);
         }
 
         public static void LoadBeeps(XmlNode serverNode) {
             XmlNode beepOnConnectNode = GetNodes(serverNode, XmlStrings.BeepOnConnectRoute).FirstOrDefault();
             XmlNode beepOnDisconnectNode = GetNodes(serverNode, XmlStrings.BeepOnDisconnectRoute).FirstOrDefault();
+            Boolean success = true;
             if (beepOnConnectNode != null) {
-                Boolean.TryParse(beepOnConnectNode.InnerText, out BeepOnConnection);
+                success = !Boolean.TryParse(beepOnConnectNode.InnerText, out BeepOnConnection) ? false : success;
             }
             if (beepOnDisconnectNode != null) {
-                Boolean.TryParse(beepOnDisconnectNode.InnerText, out BeepOnDisconnection);
+                success = !Boolean.TryParse(beepOnDisconnectNode.InnerText, out BeepOnDisconnection) ? false : success;
             }
+            if (success) NLConsole.WriteLine(UIStrings.ConfigBeepLoadComplete, ConsoleColor.DarkYellow);
+            else NLConsole.WriteLine(UIStrings.ConfigBeepLoadFailed, ConsoleColor.DarkRed);
         }
 
         public static List<XmlNode> GetNodes(XmlNode serverNode, String path) {

@@ -26,8 +26,6 @@ namespace NL.Server {
                 NLConsole.InvokeConsoleCommand(command);
             }
 
-            ServersDirector.ConnectAll();
-
             Close();
             return 0;
 

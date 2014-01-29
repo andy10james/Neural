@@ -16,17 +16,23 @@ namespace NL.Server.Controllers {
             RemoteActionDictionary.Add("HASH", CheckHashAction);
         }
 
-        private void CheckHashAction(String[] parameters) {
-            NLConsole.WriteLine("Executed Hash Check Action", ConsoleColor.White);
+        public override String GetName() {
+            return "Query Controller";
         }
 
-        private void CheckHashAction(String[] parameters, TcpClient client) {
+        private Boolean CheckHashAction(String[] parameters) {
+            NLConsole.WriteLine("Executed Hash Check Action", ConsoleColor.White);
+            return true;
+        }
+
+        private Boolean CheckHashAction(String[] parameters, TcpClient client) {
             IPEndPoint endPoint = client.Client.RemoteEndPoint as IPEndPoint;
             IPAddress ipaddress = endPoint.Address;
             String consoleNotice = String.Format("[{0}] Executed hash check action.", ipaddress);
             NLConsole.WriteLine(consoleNotice, ConsoleColor.Yellow);
             Byte[] response = Encoding.ASCII.GetBytes("EXECUTED HASH CHECK ACTION");
-            client.GetStream().Write(response, 0, response.Length);  
+            client.GetStream().Write(response, 0, response.Length);
+            return true;
         }
 
         protected override void DefaultAction(CommandPattern command, TcpClient client) {

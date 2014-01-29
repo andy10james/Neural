@@ -37,7 +37,7 @@ namespace NL.Server.Servers {
                 _listenerThread = new Thread(new ThreadStart(Listen));
                 _listenerThread.Name = Thread.CurrentThread.Name + "." + _server.GetType().Name;
                 _listenerThread.Start();
-                String message = String.Format(_server.ConnectedMessage, _port);
+                String message = String.Format(UIStrings.ServerConnected, _server.GetName(), _port);
                 NLConsole.WriteLine(message, ConsoleColor.Cyan);
             }
         }
@@ -49,7 +49,7 @@ namespace NL.Server.Servers {
                 }
                 _listener.Stop();
             }
-            String message = String.Format( _server.DisconnectedMessage, _port);
+            String message = String.Format(UIStrings.ServerDisconnected, _server.GetName(), _port);
             NLConsole.WriteLine(message, ConsoleColor.Cyan);
         }
 

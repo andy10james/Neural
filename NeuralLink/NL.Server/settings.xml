@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <nl.server>
   <start>
-    <command enabled="true">addserver 4010 querycontroller</command>
-    <command enabled="true">addserver 4020 deliverycontroller</command>
-    <command enabled="true">rcserver 4010</command>
-    <command enabled="true">rcserver 4020</command>
+    <command enabled="true">acserver 4010 querycontroller</command>
+    <command enabled="true">acserver 4020 deliverycontroller</command>
     <command enabled="false">help</command>
   </start>
   <beep>

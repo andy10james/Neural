@@ -8,6 +8,11 @@ using NL.Common;
 
 namespace NL.Server.Controllers {
     class DeliveryController : IRemoteController {
+
+        public override String GetName() {
+            return "Delivery Controller";
+        }
+
         protected override void DefaultAction(CommandPattern command, TcpClient client)
         {
             throw new NotImplementedException();

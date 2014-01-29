@@ -5,7 +5,7 @@ using NL.Common;
 namespace NL.Server.Controllers {
     public abstract class IController {
 
-        protected delegate void ActionDelegate(String[] parameters);
+        protected delegate Boolean ActionDelegate(String[] parameters);
         protected Dictionary<String, ActionDelegate> ActionDictionary;
 
         public IController() {
@@ -20,6 +20,10 @@ namespace NL.Server.Controllers {
                 return true;
             }
             return false;
+        }
+
+        public virtual String GetName() {
+            return this.GetType().Name;
         }
 
         protected virtual void DefaultAction(CommandPattern command) { }

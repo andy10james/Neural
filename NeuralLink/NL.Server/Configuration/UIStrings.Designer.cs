@@ -61,10 +61,43 @@ namespace NL.Server.Configuration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CLS;Clears the console of all text with exception of the command line.;DISABLECL;Removes and disables the command line from the console.
-        ///It is not possible to re-enable the command line after this command has been 
-        ///executed without restarting the console.;DCIP &lt;IP&gt;;Disconnects all connections with the IP address from all servers.;DCSERVER &lt;PORT&gt;;Closes all connections from the server and
-        ///disables it from accepting any further connections.;RCSERVER &lt;PORT&gt;;Reconnects the server assigned to the target port, [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to [{0}, {1}] Connection with client was initiated..
+        /// </summary>
+        internal static string ClientConnected {
+            get {
+                return ResourceManager.GetString("ClientConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}, {1}] Connection with client was ended..
+        /// </summary>
+        internal static string ClientDisconnected {
+            get {
+                return ResourceManager.GetString("ClientDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}, {1}] Connection with client was abnormally terminated..
+        /// </summary>
+        internal static string ClientTerminated {
+            get {
+                return ResourceManager.GetString("ClientTerminated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}, {1}] Transmitted: {2}..
+        /// </summary>
+        internal static string ClientTransmitted {
+            get {
+                return ResourceManager.GetString("ClientTransmitted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CLS;Clears the console of all text with exception of the command line.;DISABLECL;Removes and disables the command line from the console. It is not possible to re-enable the command line after this command has been executed without restarting the console.;DCIP &lt;IP&gt;;Disconnects all connections with the IP address from all servers.;DCSERVER &lt;PORT&gt;;Closes all connections from the server and disables it from accepting any further connections.;CSERVER &lt;PORT&gt;;Reconnects the server assigned to the target port, acce [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CommandHelp {
             get {
@@ -73,7 +106,25 @@ namespace NL.Server.Configuration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Successfully loaded server startup commands..
+        ///   Looks up a localized string similar to Successfully loaded beep settings..
+        /// </summary>
+        internal static string ConfigBeepLoadComplete {
+            get {
+                return ResourceManager.GetString("ConfigBeepLoadComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load beep settings..
+        /// </summary>
+        internal static string ConfigBeepLoadFailed {
+            get {
+                return ResourceManager.GetString("ConfigBeepLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully loaded startup commands..
         /// </summary>
         internal static string ConfigStartUpLoadComplete {
             get {
@@ -172,20 +223,20 @@ namespace NL.Server.Configuration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No server exists on given port. .
-        /// </summary>
-        internal static string NoServerOnPort {
-            get {
-                return ResourceManager.GetString("NoServerOnPort", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Port.
         /// </summary>
         internal static string Port {
             get {
                 return ResourceManager.GetString("Port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The port {0} is unavailable..
+        /// </summary>
+        internal static string PortUnavailable {
+            get {
+                return ResourceManager.GetString("PortUnavailable", resourceCulture);
             }
         }
         
@@ -222,6 +273,33 @@ namespace NL.Server.Configuration {
         internal static string ServerAlreadyConnected {
             get {
                 return ResourceManager.GetString("ServerAlreadyConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} online and listening on port {1}..
+        /// </summary>
+        internal static string ServerConnected {
+            get {
+                return ResourceManager.GetString("ServerConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} disconnected from port {1}..
+        /// </summary>
+        internal static string ServerDisconnected {
+            get {
+                return ResourceManager.GetString("ServerDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A server does not exist on port {0}..
+        /// </summary>
+        internal static string ServerDoesNotExistOnPort {
+            get {
+                return ResourceManager.GetString("ServerDoesNotExistOnPort", resourceCulture);
             }
         }
         

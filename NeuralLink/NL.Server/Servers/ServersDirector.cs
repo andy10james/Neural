@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Net.NetworkInformation;
 using NL.Server.Controllers;
 using NL.Server.Configuration;
 using NL.Server.View;
@@ -23,9 +24,18 @@ namespace NL.Server.Servers {
 
         public static ServerManager AddServer(Int16 port, ServerManager server) {
             Servers.Add(port, server);
-            String message = String.Format(UIStrings.ServerAdded, server.Server.GetType().Name, port);
+            String message = String.Format(UIStrings.ServerAdded, server.Server.GetName(), port);
             NLConsole.WriteLine(message, ConsoleColor.White);
             return server;
+        }
+
+        public static void RemoveServer(Int16 port) {
+            ServerManager server;
+            Servers.TryGetValue(port, out server);
+            if (server != null) {
+                if (server.IsAlive) server.Disconnect();
+                Servers.Remove(port);
+            }
         }
 
         public static void ConnectAll() {
@@ -78,11 +88,21 @@ namespace NL.Server.Servers {
             return Servers.Where(s => s.Key == port && s.Value.IsAlive).Any();
         }
 
+        public static Boolean IsPortAvailable(Int16 port) {
+            if (Servers.ContainsKey(port)) return false;
+            IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+            TcpConnectionInformation[] tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
+            foreach (TcpConnectionInformation tcpi in tcpConnInfoArray) {
+                if (tcpi.LocalEndPoint.Port == port) return false;
+            }
+            return true;
+        }
+
         public new static String ToString() {
             StringBuilder output = new StringBuilder();
-            output.AppendFormat("{0,-10}{1,-20}\n", UIStrings.Port, UIStrings.Server);
+            output.AppendFormat("{0,-10}{1,-25}\n", UIStrings.Port, UIStrings.Server);
             foreach (Int16 port in Servers.Keys) {
-                output.AppendFormat("{0,-10}{1,-20}{2,-30}", port, Servers[port].Server.GetType().Name, 
+                output.AppendFormat("{0,-10}{1,-25}{2,-30}", port, Servers[port].Server.GetType().Name, 
                 IsConnected(port) ? UIStrings.Connected : UIStrings.Disconnected );
                 if (port != Servers.Keys.Last()) output.AppendLine();
             }
