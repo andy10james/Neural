@@ -145,7 +145,7 @@
     <value>Port</value>
   </data>
   <data name="Server" xml:space="preserve">
-    <value>Server</value>
+    <value>Controller</value>
   </data>
   <data name="ServerNotConnected" xml:space="preserve">
     <value>Server is not connected.</value>
@@ -213,5 +213,8 @@ controller.;ACSERVER &lt;PORT&gt; &lt;CONTROLLER&gt;;Executes the ADDSERVER and 
   </data>
   <data name="ServerDisconnected" xml:space="preserve">
     <value>{0} disconnected from port {1}.</value>
+  </data>
+  <data name="NoServersAdded" xml:space="preserve">
+    <value>No servers have been added. </value>
   </data>
 </root>

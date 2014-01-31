@@ -11,8 +11,8 @@ using NL.Server.View;
 
 namespace NL.Server.Servers {
     internal static class ServersDirector {
-        
-        private static Dictionary<Int16, ServerManager> Servers; 
+
+        private static Dictionary<Int16, ServerManager> Servers;
 
         static ServersDirector() {
             Servers = new Dictionary<Int16, ServerManager>();
@@ -91,19 +91,17 @@ namespace NL.Server.Servers {
         public static Boolean IsPortAvailable(Int16 port) {
             if (Servers.ContainsKey(port)) return false;
             IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
-            TcpConnectionInformation[] tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
-            foreach (TcpConnectionInformation tcpi in tcpConnInfoArray) {
-                if (tcpi.LocalEndPoint.Port == port) return false;
-            }
-            return true;
+            IPEndPoint[] listeners = ipGlobalProperties.GetActiveTcpListeners();
+            return !listeners.Select(l => l.Port).Contains(port);
         }
 
         public new static String ToString() {
+            if (!Servers.Any()) return UIStrings.NoServersAdded;
             StringBuilder output = new StringBuilder();
             output.AppendFormat("{0,-10}{1,-25}\n", UIStrings.Port, UIStrings.Server);
             foreach (Int16 port in Servers.Keys) {
-                output.AppendFormat("{0,-10}{1,-25}{2,-30}", port, Servers[port].Server.GetType().Name, 
-                IsConnected(port) ? UIStrings.Connected : UIStrings.Disconnected );
+                output.AppendFormat("{0,-10}{1,-25}{2,-30}", port, Servers[port].Server.GetType().Name,
+                IsConnected(port) ? UIStrings.Connected : UIStrings.Disconnected);
                 if (port != Servers.Keys.Last()) output.AppendLine();
             }
             return output.ToString();
